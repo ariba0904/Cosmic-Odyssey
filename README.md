@@ -16,7 +16,7 @@ The project aims to make space exploration more engaging, accessible, and easier
 
 It also demonstrates how modern web development can be used to create educational and visually interactive applications.
 
-🔗 **Live Demo:** 
+🔗 **Live Demo:** https://ariba0904.github.io/Cosmic-Odyssey/
 
 ---
 
