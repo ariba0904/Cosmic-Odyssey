@@ -6,7 +6,7 @@
   <title>Cosmic Odyssey - 3D Solar System & Milky Way Explorer</title>
 
   <!-- Tailwind configuration (kept separate) -->
-  <script src="/Cosmic-Odyssey/tailwind.config.js"></script>
+  <script src="./tailwind.config.js"></script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,8 +28,8 @@
   <!-- Tween.js for smooth camera animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 
-  <script type="module" crossorigin src="/Cosmic-Odyssey/assets/index-PpSEdYe4.js"></script>
-  <link rel="stylesheet" crossorigin href="/Cosmic-Odyssey/assets/index-UEKGv0Dm.css">
+  <script type="module" crossorigin src="/Cosmic-Odyssey/assets/index-CkqfQgn4.js"></script>
+  <link rel="stylesheet" crossorigin href="/Cosmic-Odyssey/assets/index-CbrDJDB_.css">
 </head>
 <body class="w-screen h-screen overflow-hidden flex flex-col justify-between">
 
@@ -73,7 +73,7 @@
     </div>
 
     <!-- Search & Quick Navigation Bar -->
-    <div class="relative hidden lg:block w-48">
+    <div class="relative w-full sm:w-48 mobile-search">
       <input type="text" id="planet-search" placeholder="Search planet/moon..." oninput="filterPlanets(this.value)" class="w-full bg-white/5 border border-white/15 text-xs text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-400">
       <div id="search-results" class="hidden absolute top-10 left-0 right-0 glass-card rounded-xl border border-white/15 max-h-48 overflow-y-auto p-1 z-30"></div>
     </div>

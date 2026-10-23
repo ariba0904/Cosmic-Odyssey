@@ -1,4 +1,4 @@
-    /* Realistic 3D Planet Image Logos */
+/* Realistic 3D Planet Image Logos */
     const PLANET_REALISTIC_LOGOS = {
       Sun: `<div class="planet-img-logo bg-gradient-to-br from-amber-300 via-orange-500 to-red-600 shadow-amber-500/50 shadow-lg border border-amber-300"></div>`,
       Mercury: `<div class="planet-img-logo bg-gradient-to-br from-gray-300 via-gray-500 to-gray-800 border border-gray-400"></div>`,
@@ -594,11 +594,7 @@
 
       galaxyGroup.add(new THREE.Points(geometry, particleMaterial));
 
-      const coreMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(32, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0xffddaa, transparent: true, opacity: 0.6 })
-      );
-      galaxyGroup.add(coreMesh);
+      // Removed the oversized central core sphere for a cleaner Milky Way view.
 
       const sunMarker = new THREE.Mesh(
         new THREE.SphereGeometry(5, 16, 16),
@@ -1293,4 +1289,4 @@ function focusOnSatellite() {
 }
 
 // Global scope exposures
-Object.assign(window, { openMissionModal, closeMissionModal, calculateMissionData, start3DMissionSimulation });
+Object.assign(window, { openMissionModal, closeMissionModal, calculateMissionData, start3DMissionSimulation });  

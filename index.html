@@ -6,13 +6,13 @@
   <title>Cosmic Odyssey - 3D Solar System & Milky Way Explorer</title>
 
   <!-- Tailwind configuration (kept separate) -->
-  <script src="/tailwind.config.js"></script>
+  <script src="./tailwind.config.js"></script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Project stylesheet (extracted from original HTML) -->
-  <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="./src/style.css">
   
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,7 +72,7 @@
     </div>
 
     <!-- Search & Quick Navigation Bar -->
-    <div class="relative hidden lg:block w-48">
+    <div class="relative w-full sm:w-48 mobile-search">
       <input type="text" id="planet-search" placeholder="Search planet/moon..." oninput="filterPlanets(this.value)" class="w-full bg-white/5 border border-white/15 text-xs text-white rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-400">
       <div id="search-results" class="hidden absolute top-10 left-0 right-0 glass-card rounded-xl border border-white/15 max-h-48 overflow-y-auto p-1 z-30"></div>
     </div>
@@ -272,7 +272,7 @@
   <audio id="bg-audio" loop src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
   <!-- Application code extracted into src/main.js -->
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="./src/main.js"></script>
   <!-- Satellite Mission Simulator Modal -->
 <div id="mission-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
   <div class="glass-card w-full max-w-4xl max-h-[90vh] rounded-2xl border border-cyan-500/30 flex flex-col overflow-hidden shadow-2xl">
