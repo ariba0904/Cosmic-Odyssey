@@ -41,6 +41,11 @@
   <!-- Top Navigation Bar -->
   <header class="glass-nav relative z-20 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
     
+    <!-- Additive persistent object explorer menu -->
+    <button id="open-explorer-btn" onclick="openExplorer()" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-cyan-300 hover:text-white transition" title="Open Object Explorer" aria-label="Open Object Explorer">
+      <i class="fa-solid fa-bars-staggered"></i>
+    </button>
+
     <!-- Branding -->
     <div class="flex items-center space-x-3 cursor-pointer" onclick="resetCamera()">
       <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">

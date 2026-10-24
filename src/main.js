@@ -1289,4 +1289,177 @@ function focusOnSatellite() {
 }
 
 // Global scope exposures
-Object.assign(window, { openMissionModal, closeMissionModal, calculateMissionData, start3DMissionSimulation });  
+
+/* Persistent Object Explorer: additive feature; original Solar System remains untouched. */
+const EXPLORER_MOONS = {
+  Earth: ['Moon'],
+  Jupiter: ['Io', 'Europa', 'Ganymede'],
+  Saturn: ['Titan']
+};
+const EXPLORER_OBJECTS = {
+  Moon: { parent:'Earth', color:0xaaa9a5, subtitle:'Earth’s natural satellite', diameter:'3,474.8 km', distance:'384,400 km (average from Earth)', period:'27.3 days (orbit)', fact:'The Moon is tidally locked to Earth and strongly influences ocean tides.' },
+  Phobos:{parent:'Mars',color:0x8b8178,subtitle:'Inner moon of Mars',diameter:'22.5 km (mean)',distance:'About 6,000 km from Mars',period:'7.65 hours (orbit)',fact:'Phobos orbits Mars faster than Mars rotates.'},
+  Deimos:{parent:'Mars',color:0xb3a79a,subtitle:'Outer moon of Mars',diameter:'12.4 km (mean)',distance:'About 23,460 km from Mars',period:'30.3 hours (orbit)',fact:'Deimos is small, irregular, and covered with fine dust.'},
+  Io:{parent:'Jupiter',color:0xe6b94f,subtitle:'Volcanically active moon of Jupiter',diameter:'3,643 km',distance:'421,700 km from Jupiter (average)',period:'1.77 days (orbit)',fact:'Io is the most volcanically active world known in the Solar System.'},
+  Europa:{parent:'Jupiter',color:0xc9bda5,subtitle:'Icy moon of Jupiter',diameter:'3,122 km',distance:'671,100 km from Jupiter (average)',period:'3.55 days (orbit)',fact:'Europa likely contains a global ocean beneath its icy crust.'},
+  Ganymede:{parent:'Jupiter',color:0x9b9180,subtitle:'Largest moon in the Solar System',diameter:'5,268 km',distance:'1,070,400 km from Jupiter (average)',period:'7.15 days (orbit)',fact:'Ganymede is the only moon known to have its own intrinsic magnetic field.'},
+  Callisto:{parent:'Jupiter',color:0x655f58,subtitle:'Heavily cratered moon of Jupiter',diameter:'4,821 km',distance:'1,882,700 km from Jupiter (average)',period:'16.7 days (orbit)',fact:'Callisto has one of the oldest, most heavily cratered surfaces.'},
+  Titan:{parent:'Saturn',color:0xc78b43,subtitle:'Largest moon of Saturn',diameter:'5,150 km',distance:'1,221,870 km from Saturn (average)',period:'15.95 days (orbit)',fact:'Titan has a dense nitrogen-rich atmosphere and lakes of liquid methane and ethane.'},
+  Enceladus:{parent:'Saturn',color:0xd9e4e8,subtitle:'Icy, active moon of Saturn',diameter:'504 km',distance:'238,000 km from Saturn (average)',period:'1.37 days (orbit)',fact:'Enceladus sprays water-rich plumes from a subsurface ocean.'},
+  Mimas:{parent:'Saturn',color:0xaaa9a4,subtitle:'Small icy moon of Saturn',diameter:'396 km',distance:'185,500 km from Saturn (average)',period:'0.94 days (orbit)',fact:'Its large Herschel crater gives Mimas a distinctive appearance.'},
+  Titania:{parent:'Uranus',color:0x9c9a91,subtitle:'Largest moon of Uranus',diameter:'1,578 km',distance:'436,300 km from Uranus (average)',period:'8.7 days (orbit)',fact:'Titania is a mixture of ice and rock with a fractured surface.'},
+  Oberon:{parent:'Uranus',color:0x77736c,subtitle:'Outer major moon of Uranus',diameter:'1,523 km',distance:'583,500 km from Uranus (average)',period:'13.5 days (orbit)',fact:'Oberon is heavily cratered and has a dark surface.'},
+  Miranda:{parent:'Uranus',color:0xaaa49b,subtitle:'Small, geologically varied moon of Uranus',diameter:'472 km',distance:'129,900 km from Uranus (average)',period:'1.41 days (orbit)',fact:'Miranda has dramatic cliffs and patchwork terrain.'},
+  Triton:{parent:'Neptune',color:0xb8c6c7,subtitle:'Largest moon of Neptune',diameter:'2,710 km',distance:'354,800 km from Neptune (average)',period:'5.88 days (retrograde orbit)',fact:'Triton travels in a retrograde orbit and has active nitrogen geysers.'},
+  Proteus:{parent:'Neptune',color:0x777a79,subtitle:'Large irregular moon of Neptune',diameter:'About 420 km',distance:'117,600 km from Neptune (average)',period:'1.12 days (orbit)',fact:'Proteus is irregularly shaped and heavily cratered.'},
+  Nereid:{parent:'Neptune',color:0x8d8b85,subtitle:'Distant moon of Neptune',diameter:'About 340 km',distance:'5.5 million km from Neptune (average)',period:'360 days (orbit)',fact:'Nereid follows one of the most eccentric known moon orbits.'}
+};
+const EXPLORER_CRAFT = {
+  hohmann:{title:'Hohmann Transfer Model',subtitle:'Efficient orbital transfer trajectory',color:0x35d9ff,details:[['Model','Hohmann transfer'],['Purpose','Illustrates a two-impulse transfer between circular orbits'],['Key concept','Efficiency trades travel time for lower idealized Δv'],['Caveat','A trajectory model, not a physical spacecraft'] ],fact:'A Hohmann transfer is an idealized orbital maneuver; real missions include launch windows, gravity assists, and other constraints.'},
+  new_horizons:{title:'New Horizons',subtitle:'NASA deep-space planetary probe',color:0x47c9ff,details:[['Launch','January 19, 2006'],['Primary milestone','Pluto flyby: July 14, 2015'],['Current mission','Kuiper Belt exploration'],['Agency','NASA / Johns Hopkins APL'] ],fact:'New Horizons made the first close-up exploration of Pluto and later flew past Arrokoth in the Kuiper Belt.'},
+  voyager:{title:'Voyager 1',subtitle:'NASA interstellar mission spacecraft',color:0xffca67,details:[['Launch','September 5, 1977'],['Major milestone','Interstellar space entered in 2012'],['Mission focus','Outer planets and interstellar space'],['Agency','NASA / JPL'] ],fact:'Voyager 1 returned landmark images and measurements of the outer planets before continuing into interstellar space.'},
+  ion_drive:{title:'Ion Propulsion Probe',subtitle:'Concept spacecraft model',color:0xb79aff,details:[['Propulsion','Electric ion propulsion (concept)'],['Thrust','Low thrust over long durations'],['Strength','High propellant efficiency'],['Status','Illustrative mission concept, not a specific NASA spacecraft'] ],fact:'Ion engines accelerate charged particles to produce efficient thrust, usually over long periods.'}
+};
+let explorerRenderer=null, explorerScene=null, explorerCamera=null, explorerControls=null, explorerModel=null, explorerRAF=0, explorerResizeObserver=null, explorerCurrentKey='Earth';
+function installExplorerUI(){
+ if(document.getElementById('cosmic-explorer')) return;
+ const root=document.createElement('div'); root.id='cosmic-explorer'; root.className='cosmic-explorer hidden';
+ root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><div class="ce-nav-heading">PLANETS</div><div id="ce-planet-list"></div><div class="ce-nav-heading">MISSION SPACECRAFT</div><div id="ce-craft-list"></div><div class="ce-nav-foot">NASA data links included where applicable</div></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content"><div class="ce-welcome"><span class="ce-pill">EXPLORE THE COSMOS</span><h1>Every world has a story.</h1><p>Choose a planet, moon, or mission spacecraft from the navigation panel to explore its rotating 3D model and discover key facts.</p><div class="ce-voice-actions ce-dashboard-voice-actions"><button class="ce-listen" id="ce-dashboard-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span></button><button class="ce-voice-pause" id="ce-dashboard-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause dashboard narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div><div class="ce-dashboard-actions"><button onclick="openExplorerObject('Earth')">Explore Earth <i class="fa-solid fa-arrow-right"></i></button><button onclick="openExplorerObject('new_horizons','craft')">Meet New Horizons</button></div></div><div class="ce-card-grid"><article><span>08</span><b>Planets</b><small>Solar System worlds</small></article><article><span>05</span><b>Featured moons</b><small>Earth, Jupiter & Saturn</small></article><article><span>04</span><b>Mission models</b><small>Spacecraft & trajectory concepts</small></article></div><div class="ce-nasa-links"><h3>Explore official NASA resources</h3><a class="ce-nasa-link" href="https://www.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-earth-americas"></i> NASA Official Website <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/solar-system/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Solar System Exploration <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/mission/" target="_blank" rel="noopener"><i class="fa-solid fa-rocket"></i> NASA Missions <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://eyes.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i> NASA Eyes <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://images.nasa.gov/" target="_blank" rel="noopener"><i class="fa-regular fa-images"></i> NASA Image & Video Library <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://www.jpl.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-satellite"></i> NASA Jet Propulsion Laboratory <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div><p class="ce-source-note">Official NASA resources open in a new tab.</p></section><section id="ce-detail" class="ce-detail hidden"><div class="ce-model-stage" id="ce-model-stage"><div class="ce-model-badge"><span class="ce-live-dot"></span> LIVE 3D MODEL</div><div class="ce-model-hint"><i class="fa-solid fa-hand-pointer"></i> Drag to rotate · Scroll to zoom</div><div id="ce-model-canvas"></div><div class="ce-model-controls"><button onclick="toggleExplorerRotation()" id="ce-rotation-btn"><i class="fa-solid fa-pause"></i> Pause rotation</button><button onclick="resetExplorerCamera()"><i class="fa-solid fa-arrows-to-circle"></i> Reset view</button></div></div><div class="ce-resize-handle" id="ce-resize-handle" title="Drag to resize information panel"></div><aside class="ce-info"><div class="ce-info-head"><div><span id="ce-category" class="ce-pill">PLANET</span><h1 id="ce-title">Earth</h1><p id="ce-subtitle"></p></div><div class="ce-voice-actions"><button class="ce-listen" id="ce-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen</span></button><button class="ce-voice-pause" id="ce-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div></div><div id="ce-info-body" class="ce-info-body"></div><div class="ce-info-footer"><span><i class="fa-solid fa-database"></i> Verified reference links</span><a id="ce-source-link" href="https://science.nasa.gov/solar-system/" target="_blank" rel="noopener">View NASA source ↗</a></div></aside></section></main>`;
+ document.body.appendChild(root);
+ const planetList=document.getElementById('ce-planet-list');
+ ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'].forEach(k=>{
+   const row=document.createElement('div'); row.className='ce-planet-group';
+   const button=makeExplorerNavItem(k,'planet',k);
+   button.classList.add('ce-planet-parent');
+   button.onclick=()=>{openExplorerObject(k,'planet'); const children=row.querySelector('.ce-submoon-list'); if(children) children.classList.toggle('expanded');};
+   row.appendChild(button);
+   if(EXPLORER_MOONS[k]){
+     const children=document.createElement('div'); children.className='ce-submoon-list';
+     EXPLORER_MOONS[k].forEach(m=>children.appendChild(makeExplorerNavItem(m,'moon',m)));
+     row.appendChild(children);
+   }
+   planetList.appendChild(row);
+ });
+ const craftList=document.getElementById('ce-craft-list'); Object.keys(EXPLORER_CRAFT).forEach(k=>craftList.appendChild(makeExplorerNavItem(EXPLORER_CRAFT[k].title,'craft',k)));
+ const handle=document.getElementById('ce-resize-handle'); let resizing=false;
+ handle.addEventListener('pointerdown',e=>{resizing=true;handle.setPointerCapture(e.pointerId);document.body.classList.add('ce-resizing');});
+ handle.addEventListener('pointermove',e=>{if(!resizing)return;const width=Math.max(280,Math.min(window.innerWidth*.62,window.innerWidth-e.clientX));root.style.setProperty('--ce-info-width',width+'px');});
+ handle.addEventListener('pointerup',()=>{resizing=false;document.body.classList.remove('ce-resizing');});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!root.classList.contains('hidden')){if(window.innerWidth<760)toggleExplorerNav(false);else closeExplorer();}});
+}
+function makeExplorerNavItem(label,type,key){const b=document.createElement('button');b.className='ce-nav-item';b.dataset.key=key||label;b.dataset.type=type;b.innerHTML=`<span class="ce-nav-dot ${type}"></span><span>${label}</span>`;b.onclick=()=>openExplorerObject(key||label,type);return b;}
+function toggleExplorerNav(force){const nav=document.getElementById('ce-nav');if(!nav)return;const open=typeof force==='boolean'?force:!nav.classList.contains('open');nav.classList.toggle('open',open);}
+function openExplorer(){installExplorerUI();document.getElementById('cosmic-explorer').classList.remove('hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');document.getElementById('info-panel')?.classList.add('ce-original-hidden');document.querySelector('header.glass-nav')?.classList.add('ce-original-hidden');openExplorerDashboard();}
+function closeExplorer(){stopExplorerVoice();const root=document.getElementById('cosmic-explorer');if(root)root.classList.add('hidden');document.querySelectorAll('.ce-original-hidden').forEach(e=>e.classList.remove('ce-original-hidden'));if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();}
+function openExplorerDashboard(){stopExplorerVoice();installExplorerUI();explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey, an interactive three dimensional space explorer. From this dashboard, you can explore all eight planets, five featured moons, and four mission spacecraft models. Select an object from the navigation menu to view its rotating model, learn key facts, and listen to its information. You can also open official NASA resources for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
+function openExplorerObject(key,type){stopExplorerVoice();installExplorerUI();if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
+function explorerStartRenderer(){const mount=document.getElementById('ce-model-canvas');if(!mount)return; if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerControls){explorerControls.dispose();explorerControls=null;}if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}mount.innerHTML='';explorerScene=new THREE.Scene();explorerScene.background=new THREE.Color(0x030712);explorerScene.fog=new THREE.FogExp2(0x030712,0.018);explorerCamera=new THREE.PerspectiveCamera(45,Math.max(1,mount.clientWidth)/Math.max(1,mount.clientHeight),0.1,2000);explorerCamera.position.set(0,2.2,7);explorerRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true});explorerRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));explorerRenderer.setSize(Math.max(1,mount.clientWidth),Math.max(1,mount.clientHeight));explorerRenderer.outputEncoding=THREE.sRGBEncoding;mount.appendChild(explorerRenderer.domElement);explorerControls=new THREE.OrbitControls(explorerCamera,explorerRenderer.domElement);explorerControls.enableDamping=true;explorerControls.dampingFactor=.06;explorerControls.minDistance=2;explorerControls.maxDistance=18;explorerScene.add(new THREE.AmbientLight(0x8ba7d8,1.15));const light=new THREE.PointLight(0xffffff,2.4,100);light.position.set(5,4,6);explorerScene.add(light);const rim=new THREE.PointLight(0x3b82f6,1.5,80);rim.position.set(-5,-2,-5);explorerScene.add(rim);const starsGeo=new THREE.BufferGeometry(),arr=[];for(let i=0;i<1000;i++){arr.push((Math.random()-.5)*100,(Math.random()-.5)*100,(Math.random()-.5)*100);}starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));explorerScene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xbad7ff,size:.055,transparent:true,opacity:.8})));const resize=()=>{if(!explorerRenderer||!mount.isConnected)return;const w=Math.max(1,mount.clientWidth),h=Math.max(1,mount.clientHeight);explorerCamera.aspect=w/h;explorerCamera.updateProjectionMatrix();explorerRenderer.setSize(w,h);};if(explorerResizeObserver)explorerResizeObserver.disconnect();explorerResizeObserver=new ResizeObserver(resize);explorerResizeObserver.observe(mount);let rotating=true;window.toggleExplorerRotation=()=>{rotating=!rotating;document.getElementById('ce-rotation-btn').innerHTML=rotating?'<i class="fa-solid fa-pause"></i> Pause rotation':'<i class="fa-solid fa-play"></i> Resume rotation';};window.resetExplorerCamera=()=>{if(explorerCamera){explorerCamera.position.set(0,2.2,7);explorerControls.target.set(0,0,0);explorerControls.update();}};const tick=()=>{explorerRAF=requestAnimationFrame(tick);if(explorerModel&&rotating)explorerModel.rotation.y+=.003;explorerControls?.update();explorerRenderer?.render(explorerScene,explorerCamera);};tick();return {scene:explorerScene};}
+function renderExplorerCelestial(key,type){const data=CELESTIAL_DATA[key]||{};const moon=EXPLORER_OBJECTS[key];const craftType=type==='moon';const title=moon?key:(data.name||key);const subtitle=moon?moon.subtitle:(data.subtitle||'Solar System object');document.getElementById('ce-category').textContent=moon?'NATURAL SATELLITE':'PLANET';document.getElementById('ce-title').textContent=title;document.getElementById('ce-subtitle').textContent=subtitle;const explorerPalette={Mercury:0x6f7782,Venus:0xf1e8d7,Earth:0x0757a6,Jupiter:0xb07f35,Saturn:0xe2bf7d};const color=moon?moon.color:(explorerPalette[key]||data.color||0x6aaeff);const metrics=moon?[['Parent body',moon.parent],['Diameter',moon.diameter],['Orbital distance',moon.distance],['Orbital period',moon.period]]:[['Mass',data.mass],['Diameter',data.meanRadius],['Temperature',data.temp],['Surface gravity',data.gravity],['Distance from Sun',data.distance],['Orbital period',data.period],['Rotation period',data.rotation],['Atmosphere',data.atmosphere]];const facts=moon?[moon.fact]:((data.facts||[]));let html=`<p class="ce-description">${moon?moon.fact:(data.desc||'Explore this celestial object in interactive 3D.')}</p><div class="ce-metric-grid">${metrics.filter(x=>x[1]).map(x=>`<article><small>${x[0]}</small><b>${x[1]}</b></article>`).join('')}</div><div class="ce-fact-block"><h3><i class="fa-solid fa-star"></i> Key facts</h3><ul>${facts.map(f=>`<li>${f}</li>`).join('')}</ul></div>`;if(!moon&&EXPLORER_MOONS[key]?.length)html+=`<div class="ce-fact-block"><h3><i class="fa-solid fa-moon"></i> Featured moons</h3><div class="ce-moon-chips">${EXPLORER_MOONS[key].map(m=>`<button onclick="openExplorerObject('${m}','moon')">${m} <i class="fa-solid fa-arrow-up-right-from-square"></i></button>`).join('')}</div></div>`;html+=`<p class="ce-accuracy-note">Figures are rounded reference values and may vary by source or epoch. Use the NASA reference for mission-grade data.</p>`;document.getElementById('ce-info-body').innerHTML=html;const source=document.getElementById('ce-source-link');source.href=moon?'https://science.nasa.gov/solar-system/moons/':`https://science.nasa.gov/solar-system/`;explorerStartRenderer();const radius=moon?1.15:(key==='Jupiter'?1.65:key==='Saturn'?1.5:key==='Sun'?1.7:1.25);explorerModel=new THREE.Group();const geo=new THREE.SphereGeometry(radius,64,48);const detailType=key==='Earth'?'earth':(['Jupiter','Saturn'].includes(key)?'bands':(['Mercury','Mars','Moon','Phobos','Deimos','Mimas'].includes(key)?'craters':'smooth'));const explorerTexturePalette={Mercury:'#626b77',Venus:'#eee5d4',Earth:'#0757a6'};const textureColor=explorerTexturePalette[key]||('#'+Number(color).toString(16).padStart(6,'0'));const mat=new THREE.MeshStandardMaterial({color:0xffffff,map:createPlanetTexture(textureColor,detailType),roughness:.8,metalness:.03});const sphere=new THREE.Mesh(geo,mat);explorerModel.add(sphere);if(key==='Saturn'){const ring=new THREE.Mesh(new THREE.RingGeometry(radius*1.35,radius*2.2,96),new THREE.MeshStandardMaterial({color:0xd0b47b,side:THREE.DoubleSide,transparent:true,opacity:.85,roughness:1}));ring.rotation.x=Math.PI/2.5;explorerModel.add(ring);}if(key==='Uranus'){const ring=new THREE.Mesh(new THREE.RingGeometry(radius*1.35,radius*1.65,64),new THREE.MeshBasicMaterial({color:0x80d9ed,side:THREE.DoubleSide,transparent:true,opacity:.55}));ring.rotation.x=Math.PI/2.2;explorerModel.add(ring);}if(key==='Earth'){const cloud=new THREE.Mesh(new THREE.SphereGeometry(radius*1.015,48,32),new THREE.MeshBasicMaterial({color:0x8ce5ff,transparent:true,opacity:.07,wireframe:true}));explorerModel.add(cloud);}explorerScene.add(explorerModel);if(!moon&&EXPLORER_MOONS[key]){EXPLORER_MOONS[key].slice(0,4).forEach((m,i)=>{const md=EXPLORER_OBJECTS[m];const mg=new THREE.Mesh(new THREE.SphereGeometry(.13+(i%2)*.035,20,16),new THREE.MeshStandardMaterial({color:md?.color||0xb7b7b7,roughness:1}));const a=i*Math.PI/2;mg.position.set(Math.cos(a)*radius*2.4,Math.sin(a*.7)*.25,Math.sin(a)*radius*2.4);explorerModel.add(mg);});}const narratorText=`${title}. ${subtitle}. ${moon?moon.fact:(data.desc||'')}. ${metrics.map(x=>x[0]+': '+x[1]).join('. ')}.`;document.getElementById('ce-listen').dataset.narration=narratorText;}
+function renderExplorerCraft(key){const craft=EXPLORER_CRAFT[key]||EXPLORER_CRAFT.hohmann;document.getElementById('ce-category').textContent='MISSION SPACECRAFT';document.getElementById('ce-title').textContent=craft.title;document.getElementById('ce-subtitle').textContent=craft.subtitle;document.getElementById('ce-info-body').innerHTML=`<p class="ce-description">${craft.fact}</p><div class="ce-metric-grid">${craft.details.map(x=>`<article><small>${x[0]}</small><b>${x[1]}</b></article>`).join('')}</div><div class="ce-fact-block"><h3><i class="fa-solid fa-circle-info"></i> About this model</h3><p class="ce-description">This is an educational 3D representation. The model is illustrative and not a scale-accurate engineering design.</p></div><p class="ce-accuracy-note">NASA mission reference: verify mission dates and status at the official NASA mission page.</p>`;document.getElementById('ce-source-link').href=key==='new_horizons'?'https://science.nasa.gov/mission/new-horizons/':key==='voyager'?'https://science.nasa.gov/mission/voyager/':'https://science.nasa.gov/solar-system/';document.getElementById('ce-listen').dataset.narration=`${craft.title}. ${craft.subtitle}. ${craft.fact} ${craft.details.map(x=>x[0]+': '+x[1]).join('. ')}.`;explorerStartRenderer();explorerModel=new THREE.Group();const c=craft.color;
+ const metal=new THREE.MeshStandardMaterial({color:0xd9e2ec,metalness:.65,roughness:.3});
+ const gold=new THREE.MeshStandardMaterial({color:0xd9a441,metalness:.55,roughness:.35});
+ const solar=new THREE.MeshStandardMaterial({color:0x244e8a,metalness:.35,roughness:.4,emissive:0x10264a});
+ const accent=new THREE.MeshStandardMaterial({color:c,metalness:.45,roughness:.3,emissive:c,emissiveIntensity:.12});
+ if(key==='voyager'){
+   const bus=new THREE.Mesh(new THREE.BoxGeometry(.42,.5,.42),metal);explorerModel.add(bus);
+   const dish=new THREE.Mesh(new THREE.SphereGeometry(.48,28,14,0,Math.PI*2,0,Math.PI/2),new THREE.MeshStandardMaterial({color:0xf1f5f9,metalness:.45,roughness:.25,side:THREE.DoubleSide}));dish.position.set(-.15,.4,0);dish.rotation.z=-Math.PI/2;explorerModel.add(dish);
+   [-1,1].forEach(side=>{const panel=new THREE.Mesh(new THREE.BoxGeometry(.72,.04,.38),solar);panel.position.set(.15,side*.58,0);explorerModel.add(panel);});
+   const boom=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.95,8),gold);boom.rotation.z=Math.PI/2;boom.position.x=.5;explorerModel.add(boom);
+ }else if(key==='new_horizons'){
+   const body=new THREE.Mesh(new THREE.BoxGeometry(.62,.5,.58),gold);explorerModel.add(body);
+   const dish=new THREE.Mesh(new THREE.ConeGeometry(.42,.28,32),metal);dish.rotation.z=-Math.PI/2;dish.position.x=-.42;explorerModel.add(dish);
+   [-1,1].forEach(side=>{const panel=new THREE.Mesh(new THREE.BoxGeometry(.95,.035,.36),solar);panel.position.set(.12,side*.48,0);explorerModel.add(panel);});
+   const antenna=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.75,8),metal);antenna.position.set(.15,.72,0);explorerModel.add(antenna);
+ }else if(key==='ion_drive'){
+   const core=new THREE.Mesh(new THREE.CylinderGeometry(.24,.32,1.05,16),metal);core.rotation.z=Math.PI/2;explorerModel.add(core);
+   const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(.14,.34,.38,16),accent);nozzle.rotation.z=Math.PI/2;nozzle.position.x=.68;explorerModel.add(nozzle);
+   const glow=new THREE.Mesh(new THREE.ConeGeometry(.22,.95,20),new THREE.MeshBasicMaterial({color:0x8b5cf6,transparent:true,opacity:.62}));glow.rotation.z=-Math.PI/2;glow.position.x=1.25;explorerModel.add(glow);
+   [-1,1].forEach(side=>{const panel=new THREE.Mesh(new THREE.BoxGeometry(.75,.03,.34),solar);panel.position.set(-.08,side*.48,0);explorerModel.add(panel);});
+ }else{
+   // Distinct 3D solar-sail probe concept replaces the previous orbit diagram.
+   const core=new THREE.Mesh(new THREE.OctahedronGeometry(.34,0),new THREE.MeshStandardMaterial({color:0x35d9ff,metalness:.65,roughness:.22,emissive:0x073c55,emissiveIntensity:.35}));
+   explorerModel.add(core);
+   const mastMat=new THREE.MeshStandardMaterial({color:0xd7e2ee,metalness:.75,roughness:.25});
+   const mast=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,2.2,10),mastMat);mast.rotation.z=Math.PI/2;explorerModel.add(mast);
+   const sailMat=new THREE.MeshStandardMaterial({color:0x9ee8ff,metalness:.35,roughness:.2,side:THREE.DoubleSide,transparent:true,opacity:.86,emissive:0x164e63,emissiveIntensity:.2});
+   const sail=new THREE.Mesh(new THREE.PlaneGeometry(1.65,1.65),sailMat);sail.position.x=.75;sail.rotation.y=.18;explorerModel.add(sail);
+   const sail2=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.2),new THREE.MeshStandardMaterial({color:0xc4b5fd,metalness:.25,roughness:.25,side:THREE.DoubleSide,transparent:true,opacity:.8}));sail2.position.x=-.72;sail2.rotation.y=-.2;explorerModel.add(sail2);
+   const antenna=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.85,8),gold);antenna.position.set(0,.62,0);explorerModel.add(antenna);
+   const beacon=new THREE.Mesh(new THREE.SphereGeometry(.09,16,12),new THREE.MeshBasicMaterial({color:0x67e8f9}));beacon.position.set(0,.99,0);explorerModel.add(beacon);
+ }
+ explorerScene.add(explorerModel);}
+let explorerUtterance=null;
+let explorerSpeechChunks=[];
+let explorerSpeechIndex=0;
+let explorerSpeechSession=0;
+let explorerVoiceState='idle';
+function speakExplorerInfo(){
+ if(!('speechSynthesis' in window)){alert('Text-to-speech is not supported by this browser.');return;}
+ const synth=window.speechSynthesis;
+ // Listen doubles as Resume when narration is paused.
+ if(explorerVoiceState==='paused'){
+   synth.resume();
+   explorerVoiceState='playing';
+   updateExplorerVoiceButtons('playing');
+   return;
+ }
+ // Do not restart narration when Listen is clicked during playback.
+ if(explorerVoiceState==='playing')return;
+ const dashboardVisible=!document.getElementById('ce-dashboard')?.classList.contains('hidden');
+ const narrationSource=dashboardVisible?document.getElementById('ce-dashboard-listen'):document.getElementById('ce-listen');
+ const narration=(narrationSource?.dataset.narration||'').replace(/\s+/g,' ').trim();
+ if(!narration)return;
+ synth.cancel();
+ const session=++explorerSpeechSession;
+ // Sentence-sized utterances help avoid long-speech pause/resume issues in browsers.
+ explorerSpeechChunks=narration.match(/[^.!?]+[.!?]*/g)?.map(part=>part.trim()).filter(Boolean)||[narration];
+ explorerSpeechIndex=0;
+ explorerVoiceState='playing';
+ updateExplorerVoiceButtons('playing');
+ speakNextExplorerChunk(session);
+}
+function speakNextExplorerChunk(session){
+ if(session!==explorerSpeechSession || explorerVoiceState!=='playing')return;
+ if(explorerSpeechIndex>=explorerSpeechChunks.length){
+   explorerVoiceState='idle';explorerUtterance=null;updateExplorerVoiceButtons('idle');return;
+ }
+ const utterance=new SpeechSynthesisUtterance(explorerSpeechChunks[explorerSpeechIndex++]);
+ explorerUtterance=utterance;
+ utterance.rate=.92;utterance.pitch=1;utterance.lang='en-US';
+ utterance.onend=()=>{
+   if(session!==explorerSpeechSession)return;
+   if(explorerVoiceState==='playing')speakNextExplorerChunk(session);
+ };
+ utterance.onerror=(event)=>{
+   if(session!==explorerSpeechSession)return;
+   if(event.error==='canceled'||event.error==='interrupted')return;
+   explorerVoiceState='idle';explorerUtterance=null;updateExplorerVoiceButtons('idle');
+ };
+ window.speechSynthesis.speak(utterance);
+}
+function toggleExplorerVoicePause(){
+ if(!('speechSynthesis' in window))return;
+ const synth=window.speechSynthesis;
+ if(explorerVoiceState==='playing'){
+   synth.pause();
+   explorerVoiceState='paused';
+   updateExplorerVoiceButtons('paused');
+ }else if(explorerVoiceState==='paused'){
+   synth.resume();
+   explorerVoiceState='playing';
+   updateExplorerVoiceButtons('playing');
+ }
+}
+function stopExplorerVoice(){
+ explorerSpeechSession++;
+ if('speechSynthesis' in window)window.speechSynthesis.cancel();
+ explorerUtterance=null;explorerSpeechChunks=[];explorerSpeechIndex=0;explorerVoiceState='idle';
+ updateExplorerVoiceButtons('idle');
+}
+function updateExplorerVoiceButtons(state){
+ const listenButtons=[document.getElementById('ce-listen'),document.getElementById('ce-dashboard-listen')].filter(Boolean);
+ const pauseButtons=[document.getElementById('ce-voice-pause'),document.getElementById('ce-dashboard-voice-pause')].filter(Boolean);
+ listenButtons.forEach(listen=>{listen.innerHTML=state==='playing'?'<i class="fa-solid fa-volume-high"></i><span>Playing</span>':state==='paused'?'<i class="fa-solid fa-volume-high"></i><span>Paused</span>':(listen.id==='ce-dashboard-listen'?'<i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span>':'<i class="fa-solid fa-volume-high"></i><span>Listen</span>');});
+ pauseButtons.forEach(pause=>{pause.innerHTML=state==='paused'?'<i class="fa-solid fa-play"></i><span>Resume</span>':'<i class="fa-solid fa-pause"></i><span>Pause</span>';pause.disabled=state==='idle';pause.classList.toggle('is-paused',state==='paused');});
+}
+Object.assign(window, { openMissionModal, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, toggleExplorerNav, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice });  
