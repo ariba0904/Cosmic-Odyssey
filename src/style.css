@@ -630,3 +630,98 @@ html, body {
   #ce-creator .creator-hero h1 em{display:block;margin-top:3px}
   #ce-creator .creator-section,#ce-creator .creator-project,#ce-creator .creator-contact{padding:22px 18px;border-radius:17px}
 }
+
+
+/* Black Hole Explorer — NASA-inspired interactive science panel */
+.ce-blackhole-content{padding:clamp(18px,3vw,34px);color:#f4f6ff;min-height:calc(100vh - 76px);background:radial-gradient(ellipse at 22% 10%,rgba(126,61,37,.15),transparent 42%),radial-gradient(ellipse at 80% 65%,rgba(57,67,130,.13),transparent 48%)}
+.bh-heading{max-width:850px;margin:0 auto 22px}.bh-heading h1{font-size:clamp(28px,4vw,44px);letter-spacing:-1.5px;margin:12px 0 8px;font-weight:750}.bh-heading>p{color:#aeb9d0;line-height:1.7;max-width:760px}
+.bh-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.9fr);gap:18px;align-items:stretch;max-width:1500px;margin:auto}
+.bh-visual-panel,.bh-info-panel{border:1px solid rgba(196,208,255,.15);border-radius:20px;background:linear-gradient(145deg,rgba(22,26,43,.88),rgba(7,10,21,.94));box-shadow:0 20px 55px rgba(0,0,0,.25);overflow:hidden;min-width:0}
+.bh-scene-label{display:flex;gap:9px;align-items:center;padding:16px 18px;font:700 10px/1.4 Inter,system-ui,sans-serif;letter-spacing:1.5px;color:#b8c3db;border-bottom:1px solid rgba(255,255,255,.07)}.bh-scene-label #bh-status{margin-left:auto;color:#ffca9e;font-size:9px}.bh-live-dot{width:7px;height:7px;border-radius:50%;background:#f6a46d;box-shadow:0 0 12px #f6a46d}
+.bh-canvas{height:clamp(300px,42vw,510px);position:relative;background:#03040b}.bh-canvas canvas{width:100%;height:100%;display:block}
+.bh-scene-caption{display:flex;justify-content:space-around;gap:8px;padding:11px 10px;color:#8490aa;font-size:9px;letter-spacing:1.1px;border-top:1px solid rgba(255,255,255,.06)}
+.bh-controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:17px 18px 10px;align-items:end}.bh-controls label{grid-column:1/-1;font-size:12px;color:#c8d1e4;font-weight:650}.bh-controls select{grid-column:1/-1;width:100%;padding:12px 13px;background:#111827;color:#f4f6ff;border:1px solid rgba(203,213,255,.2);border-radius:10px;outline:none}.bh-controls button,.bh-voice-row button{border-radius:10px;padding:11px 12px;font-weight:700;font-size:12px;cursor:pointer;transition:transform .2s,filter .2s}.bh-controls button:hover,.bh-voice-row button:hover{transform:translateY(-2px);filter:brightness(1.12)}.bh-run-btn{background:linear-gradient(135deg,#ffcfaa,#e99a69);color:#21130d;border:0}.bh-reset-btn{background:rgba(255,255,255,.06);color:#dce4f7;border:1px solid rgba(255,255,255,.13)}
+.bh-progress-wrap{padding:12px 18px 19px}.bh-progress-wrap>div:first-child{display:flex;justify-content:space-between;color:#8e9bb6;font-size:9px;letter-spacing:1.1px}.bh-progress-wrap b{color:#ffd0ac}.bh-progress-track{height:5px;background:#202538;border-radius:9px;margin-top:9px;overflow:hidden}.bh-progress-track span{height:100%;display:block;width:0;background:linear-gradient(90deg,#bf6d48,#ffe1bd);box-shadow:0 0 12px #e99a69;transition:width .12s linear}
+.bh-info-panel{padding:22px;display:flex;flex-direction:column}.bh-info-kicker{font-size:9px;letter-spacing:1.6px;color:#e8aa83;font-weight:800}.bh-info-panel h2{font-size:23px;line-height:1.25;margin:12px 0;color:#f7f5f2;letter-spacing:-.5px}.bh-info-panel>p{font-size:13px;line-height:1.75;color:#b5bfd3}.bh-fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.bh-fact-grid article{padding:13px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.025);border-radius:12px}.bh-fact-grid small{display:block;color:#e3a982;font-size:8px;letter-spacing:1.2px;margin-bottom:7px}.bh-fact-grid b{font-size:12px}.bh-fact-grid p{font-size:11px;line-height:1.6;color:#9ba8c1;margin:6px 0 0}
+.bh-info-scroll{font-size:12px;line-height:1.8;color:#b9c4d9;max-height:340px;overflow:auto;padding-right:6px}.bh-info-scroll h3{font-size:15px;color:#f4f6ff;margin:8px 0}.bh-info-scroll p{margin:9px 0}.bh-info-scroll strong{color:#f3c6a7}.bh-note{padding:10px 12px;border-left:2px solid #d99a70;background:rgba(217,154,112,.07);font-size:10px!important;color:#aeb9ce!important}.bh-info-scroll a{color:#ffd0ad;text-decoration:underline}
+.bh-voice-row{display:flex;gap:8px;margin:14px 0}.bh-voice-row button{background:rgba(255,255,255,.07);color:#f2f5ff;border:1px solid rgba(255,255,255,.13)}.bh-voice-row .bh-voice-btn{flex:1;background:rgba(214,143,99,.13);border-color:rgba(235,171,128,.32);color:#ffd1b2}.bh-nasa-official{display:flex;align-items:center;gap:12px;padding:13px 12px;border:1px solid rgba(118,180,255,.24);border-radius:12px;text-decoration:none!important;color:#e9f2ff!important;background:rgba(55,104,166,.11);margin-top:8px;transition:background .2s,border-color .2s}.bh-nasa-official:hover{background:rgba(55,104,166,.2);border-color:rgba(118,180,255,.5)}.bh-nasa-official>i{font-size:17px;color:#9bc8ff}.bh-nasa-official b,.bh-nasa-official small{display:block}.bh-nasa-official b{font-size:11px}.bh-nasa-official small{font-size:10px;color:#98aac5;margin-top:4px}.bh-nasa-secondary{margin-top:7px}
+@media(max-width:1000px){.bh-layout{grid-template-columns:1fr}.bh-info-panel{padding:20px}.bh-info-scroll{max-height:none}.bh-canvas{height:380px}}
+@media(max-width:560px){.ce-blackhole-content{padding:15px 11px}.bh-heading h1{letter-spacing:-.7px}.bh-canvas{height:300px}.bh-controls{padding:13px;gap:7px}.bh-controls button{padding:10px 6px;font-size:11px}.bh-scene-caption{font-size:7px;letter-spacing:.5px}.bh-info-panel{padding:16px}.bh-fact-grid{grid-template-columns:1fr}}
+
+
+/* Black Hole Explorer scroll fix: allow the entire explorer main area to scroll on desktop and mobile */
+#cosmic-explorer .ce-main{min-height:0;height:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:rgba(154,174,220,.45) transparent}
+#cosmic-explorer .ce-blackhole-content{min-height:max-content;height:auto;flex:0 0 auto;overflow:visible;padding-bottom:48px}
+#cosmic-explorer .bh-layout{align-items:start}
+#cosmic-explorer .bh-info-panel{min-height:0}
+#cosmic-explorer .bh-info-scroll{max-height:min(48vh,420px);overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:760px){#cosmic-explorer .ce-main{height:100%;overflow-y:auto}#cosmic-explorer .ce-blackhole-content{min-height:max-content;padding-bottom:60px}#cosmic-explorer .bh-layout{grid-template-columns:minmax(0,1fr)}#cosmic-explorer .bh-info-scroll{max-height:none;overflow:visible}}
+
+
+/* Black Hole Explorer v2: mouse-orbit 3D scene and draggable information panel */
+#cosmic-explorer .bh-layout{
+ display:grid;
+ grid-template-columns:minmax(280px,1.35fr) 8px minmax(300px,.9fr);
+ gap:12px;align-items:stretch
+}
+#cosmic-explorer .bh-splitter{
+ width:8px;min-height:160px;align-self:stretch;cursor:col-resize;touch-action:none;
+ border-radius:8px;background:linear-gradient(180deg,rgba(255,190,135,.08),rgba(135,166,255,.22),rgba(255,190,135,.08));
+ border:1px solid rgba(190,205,255,.12);position:relative;transition:background .2s
+}
+#cosmic-explorer .bh-splitter:before{content:"⋮";position:sticky;top:48%;display:block;text-align:center;color:#b8c8e8;font-size:16px;line-height:28px}
+#cosmic-explorer .bh-splitter:hover{background:rgba(129,170,255,.3)}
+#cosmic-explorer .bh-canvas{overflow:hidden;cursor:grab}
+#cosmic-explorer .bh-canvas:active{cursor:grabbing}
+#cosmic-explorer .bh-orbit-hint{padding:9px 14px;color:#9eabc4;font-size:10px;letter-spacing:.2px;background:rgba(2,4,12,.8);border-top:1px solid rgba(255,255,255,.06)}
+#cosmic-explorer .bh-orbit-hint i{color:#ffc18e;margin-right:6px}
+#cosmic-explorer .bh-info-panel{min-width:0;resize:horizontal;overflow:auto}
+@media(max-width:1000px){
+ #cosmic-explorer .bh-layout{grid-template-columns:minmax(0,1fr);gap:14px}
+ #cosmic-explorer .bh-splitter{display:none}
+ #cosmic-explorer .bh-info-panel{resize:vertical;max-height:none}
+}
+
+/* Black Hole encounter controls live in the information sidebar; keep the initial scene object-free. */
+#cosmic-explorer .bh-sidebar-controls{display:block;padding:14px 0 4px;margin:4px 0 12px;border-top:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09)}
+#cosmic-explorer .bh-sidebar-controls label{display:block;margin:0 0 9px;font-size:12px;color:#d4dcef;font-weight:700}
+#cosmic-explorer .bh-sidebar-controls select{display:block;width:100%;grid-column:auto;margin-bottom:10px}
+#cosmic-explorer .bh-sidebar-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#cosmic-explorer .bh-sidebar-actions button{min-width:0}
+#cosmic-explorer .bh-sidebar-controls .bh-progress-wrap{padding:13px 0 15px}
+#cosmic-explorer .bh-idle-note{padding:12px 16px;color:#aebbd2;font-size:11px;line-height:1.6;border-top:1px solid rgba(255,255,255,.06);background:rgba(2,4,12,.78)}
+
+/* Black Hole Explorer: full-width scientific workspace, not glass-card panels. */
+#cosmic-explorer .ce-blackhole-content{width:100%;max-width:none;padding:clamp(18px,2.5vw,36px);background:#02030a;}
+#cosmic-explorer .bh-heading{max-width:none;margin:0 0 20px;padding:0 0 16px;border-bottom:1px solid rgba(150,170,220,.16)}
+#cosmic-explorer .bh-layout{width:100%;max-width:none;grid-template-columns:minmax(0,1.65fr) 8px minmax(320px,.85fr);gap:14px;align-items:stretch}
+#cosmic-explorer .bh-visual-panel,#cosmic-explorer .bh-info-panel{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+#cosmic-explorer .bh-visual-panel{min-width:0;display:flex;flex-direction:column}
+#cosmic-explorer .bh-scene-label{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+#cosmic-explorer .bh-canvas{height:clamp(420px,58vh,720px);background:#02030a;border:0}
+#cosmic-explorer .bh-orbit-hint{padding:10px 0;background:transparent;border-top:1px solid rgba(255,255,255,.1)}
+#cosmic-explorer .bh-scene-caption{padding:13px 0;border-top:1px solid rgba(255,255,255,.1)}
+#cosmic-explorer .bh-idle-note{padding:13px 0;background:transparent;border-top:1px solid rgba(255,255,255,.1)}
+#cosmic-explorer .bh-info-panel{padding:8px 0 18px 22px;border-left:1px solid rgba(150,170,220,.18);resize:horizontal;overflow:auto}
+#cosmic-explorer .bh-fact-grid article{border-radius:0;background:transparent;border:0;border-left:2px solid rgba(255,180,125,.55);padding:8px 12px}
+#cosmic-explorer .bh-nasa-official{border-radius:0;background:transparent;border:0;border-top:1px solid rgba(118,180,255,.24);padding:13px 0}
+#cosmic-explorer .bh-sidebar-controls{border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+#cosmic-explorer .bh-sidebar-controls select{border-radius:3px;background:#080c18}
+#cosmic-explorer .bh-sidebar-actions button,#cosmic-explorer .bh-voice-row button{border-radius:3px}
+#cosmic-explorer .bh-info-scroll{max-height:none;overflow:visible}
+@media(max-width:1000px){#cosmic-explorer .bh-layout{grid-template-columns:minmax(0,1fr);gap:16px}#cosmic-explorer .bh-info-panel{padding:18px 0;border-left:0;border-top:1px solid rgba(150,170,220,.18);resize:none}#cosmic-explorer .bh-canvas{height:clamp(340px,55vh,560px)}}
+@media(max-width:560px){#cosmic-explorer .ce-blackhole-content{padding:16px 12px}#cosmic-explorer .bh-canvas{height:340px}#cosmic-explorer .bh-info-panel{padding-top:18px}}
+
+
+/* Black Hole scene stays fixed in view while the long information sidebar scrolls independently. */
+#cosmic-explorer .ce-blackhole-content{background:#02030a!important;}
+#cosmic-explorer .bh-layout{align-items:start!important;}
+#cosmic-explorer .bh-visual-panel{position:sticky;top:0;height:calc(100vh - 28px);min-height:520px;align-self:start;background:#02030a!important;overflow:hidden!important;}
+#cosmic-explorer .bh-canvas{flex:1 1 auto;height:auto!important;min-height:420px;background:#02030a!important;}
+#cosmic-explorer .bh-info-panel{height:calc(100vh - 28px);max-height:calc(100vh - 28px);overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(154,174,220,.45) transparent;}
+#cosmic-explorer .bh-orbit-hint,#cosmic-explorer .bh-scene-caption,#cosmic-explorer .bh-idle-note{display:none!important;}
+@media(max-width:1000px){
+ #cosmic-explorer .bh-visual-panel{position:relative;top:auto;height:auto;min-height:0;overflow:visible!important;}
+ #cosmic-explorer .bh-canvas{height:clamp(340px,55vh,560px)!important;min-height:340px;flex:none;}
+ #cosmic-explorer .bh-info-panel{height:auto;max-height:none;overflow:visible!important;}
+}
