@@ -725,3 +725,210 @@ html, body {
  #cosmic-explorer .bh-canvas{height:clamp(340px,55vh,560px)!important;min-height:340px;flex:none;}
  #cosmic-explorer .bh-info-panel{height:auto;max-height:none;overflow:visible!important;}
 }
+
+/* Mission-control dashboard refinement */
+.ce-dashboard-content{max-width:1440px;margin:0 auto;padding:clamp(16px,2.4vw,34px);overflow-y:auto}
+.ce-dashboard-status{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:11px 14px;margin-bottom:16px;border:1px solid #29405d;background:#081222;border-radius:10px;color:#9bb0ca;font-size:9px;letter-spacing:.9px}
+.ce-status-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px #4ade8070}
+.ce-dashboard-status b{font-size:9px;color:#86efac;letter-spacing:1px}
+.ce-dashboard-status small{margin-left:auto;color:#7186a3;font-size:9px;letter-spacing:0}
+.ce-welcome-real{max-width:none;padding:clamp(20px,3vw,36px);border:1px solid #20344f;border-radius:16px;background:linear-gradient(120deg,#0b1b31 0%,#091221 58%,#10132a 100%);box-shadow:0 16px 45px #0002}
+.ce-welcome-real h1{max-width:760px;font-size:clamp(28px,4vw,48px);line-height:1.1;letter-spacing:-1px}
+.ce-welcome-real p{max-width:800px;font-size:13px;line-height:1.8;color:#a9bad1}
+.ce-welcome-real .ce-dashboard-actions{display:flex;flex-wrap:wrap;gap:9px}
+.ce-welcome-real .ce-dashboard-actions button{display:inline-flex;align-items:center;gap:8px;border:1px solid #304967;background:#101f34;color:#dbeafe;border-radius:9px;padding:10px 13px}
+.ce-welcome-real .ce-dashboard-actions button:first-child{background:#12375a;border-color:#2475a8}
+.ce-dashboard-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:25px 0 12px}
+.ce-dashboard-section-head span{font-size:8px;letter-spacing:1.7px;color:#67c8f3;font-weight:700}
+.ce-dashboard-section-head h2{font-size:17px;margin:5px 0 0;color:#e5eefb;font-weight:650}
+.ce-dashboard-section-head>small{font-size:9px;color:#7186a3}
+.ce-card-grid-real{max-width:none;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:0}
+.ce-card-grid-real article{min-height:112px;border:1px solid #243650;background:#0a1423;border-radius:12px}
+.ce-card-grid-real article>span{display:block;color:#76d5ff;font-size:26px;font-weight:700;letter-spacing:-.5px}
+.ce-card-grid-real article b{display:block;color:#dbeafe;font-size:12px}
+.ce-card-grid-real article small{display:block;margin-top:5px;color:#7f93ad;font-size:10px}
+.ce-dashboard-lower{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:14px;margin-top:18px}
+.ce-dashboard-panel{min-width:0;padding:4px 16px 16px;border:1px solid #20314a;background:#08111f;border-radius:13px}
+.ce-dashboard-panel .ce-dashboard-section-head{margin-top:15px}
+.ce-destination-list{display:grid;gap:3px}
+.ce-destination-list button{display:flex;align-items:center;gap:11px;text-align:left;padding:11px 5px;background:transparent;border:0;border-bottom:1px solid #1b2b40;color:#dbeafe;cursor:pointer}
+.ce-destination-list button:last-child{border-bottom:0}
+.ce-destination-list button>span:nth-child(2){display:grid;gap:4px;flex:1}
+.ce-destination-list button b{font-size:11px}
+.ce-destination-list button small{font-size:9px;color:#8296b0}
+.ce-destination-list button>i{font-size:10px;color:#6684a7}
+.ce-dest-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#13243a;color:#9edfff;font-size:18px}
+.ce-mars-icon{color:#f5a27d}.ce-jupiter-icon{color:#e7c29a}.ce-saturn-icon{color:#d9d1a4}.ce-craft-icon{font-size:13px}
+.ce-how-list{list-style:none;display:grid;gap:15px;padding:5px 0 0;margin:0}
+.ce-how-list li{display:flex;align-items:flex-start;gap:12px}
+.ce-how-list li>b{font-size:10px;color:#6bd3ff;background:#10263c;border:1px solid #1e405b;border-radius:7px;padding:6px 7px}
+.ce-how-list li span{display:grid;gap:5px}
+.ce-how-list strong{font-size:11px;color:#dce8f8}
+.ce-how-list small{font-size:10px;line-height:1.6;color:#8296b0}
+.ce-dashboard-content .ce-nasa-links{max-width:none;margin-top:24px}
+.ce-dashboard-content .ce-nasa-links h3{font-size:14px}
+.ce-dashboard-content .ce-source-note{line-height:1.6;color:#7186a3}
+@media(max-width:900px){.ce-card-grid-real{grid-template-columns:repeat(2,minmax(0,1fr))}.ce-dashboard-lower{grid-template-columns:1fr}.ce-dashboard-status small{width:100%;margin-left:16px}}
+@media(max-width:520px){.ce-dashboard-content{padding:12px}.ce-welcome-real{padding:18px}.ce-welcome-real h1{font-size:29px}.ce-welcome-real p{font-size:11px}.ce-card-grid-real{grid-template-columns:repeat(2,minmax(0,1fr))}.ce-card-grid-real article{min-height:95px;padding:12px}.ce-dashboard-section-head h2{font-size:15px}.ce-dashboard-section-head>small{display:none}.ce-dashboard-status{font-size:8px}.ce-dashboard-content .ce-nasa-links{grid-template-columns:1fr}}
+
+/* Black Hole full-workspace layout with independently collapsible science sidebar */
+#cosmic-explorer #ce-blackhole{position:relative;min-height:0;height:calc(100vh - 66px);padding:12px 18px 14px;overflow:hidden;display:flex;flex-direction:column;background:#02030a!important;}
+#cosmic-explorer #ce-blackhole.hidden{display:none!important}
+#cosmic-explorer #ce-blackhole .bh-heading{flex:0 0 auto;margin:0 0 8px;padding:0 0 8px;border-bottom:1px solid rgba(150,170,220,.13)}
+#cosmic-explorer #ce-blackhole .bh-heading .ce-pill{font-size:8px}
+#cosmic-explorer #ce-blackhole .bh-heading h1{font-size:clamp(20px,2vw,29px);margin:4px 0}
+#cosmic-explorer #ce-blackhole .bh-heading>p{font-size:11px;line-height:1.45;margin:0;max-width:900px}
+#cosmic-explorer #ce-blackhole .bh-layout{position:relative;flex:1 1 auto;min-height:0;height:auto;width:100%;grid-template-columns:minmax(0,1fr) 8px minmax(320px, min(36vw,440px));gap:12px;align-items:stretch;overflow:hidden}
+#cosmic-explorer #ce-blackhole .bh-visual-panel{position:relative;top:auto;height:100%;min-height:0;align-self:stretch;display:flex;flex-direction:column;overflow:hidden!important}
+#cosmic-explorer #ce-blackhole .bh-canvas{height:auto!important;min-height:0;flex:1 1 auto;width:100%;background:#02030a!important}
+#cosmic-explorer #ce-blackhole .bh-info-panel{position:relative;height:100%;max-height:100%;min-height:0;overflow-y:auto!important;resize:none;padding:8px 0 14px 18px;overscroll-behavior:contain}
+#cosmic-explorer #ce-blackhole .bh-info-scroll{max-height:none;overflow:visible}
+#cosmic-explorer #ce-blackhole .bh-sidebar-top-actions{display:flex;justify-content:flex-end;margin:0 0 2px}
+#cosmic-explorer #ce-blackhole .bh-sidebar-close,#cosmic-explorer #ce-blackhole .bh-sidebar-reopen{display:grid;place-items:center;width:36px;height:34px;color:#dbeafe;background:#0c1425;border:1px solid rgba(150,180,230,.28);border-radius:7px;cursor:pointer;z-index:5}
+#cosmic-explorer #ce-blackhole .bh-sidebar-close:hover,#cosmic-explorer #ce-blackhole .bh-sidebar-reopen:hover{background:#16243c;border-color:#67e8f9}
+#cosmic-explorer #ce-blackhole .bh-sidebar-reopen{position:absolute;right:12px;top:14px;display:none;box-shadow:0 5px 24px #0008}
+#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-layout{grid-template-columns:minmax(0,1fr);}
+#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-info-panel,#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-splitter{display:none!important}
+#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-sidebar-reopen{display:grid}
+#cosmic-explorer.ce-galaxy-mode{background:transparent!important;pointer-events:none!important}
+#cosmic-explorer.ce-galaxy-mode .ce-main,#cosmic-explorer.ce-galaxy-mode .ce-backdrop{display:none!important}
+#cosmic-explorer.ce-galaxy-mode .ce-nav{pointer-events:auto!important;position:fixed;left:0;top:0;bottom:0;height:100vh;z-index:100;background:rgba(5,12,29,.96)}
+@media(max-width:1000px){#cosmic-explorer #ce-blackhole{height:calc(100vh - 66px);overflow-y:auto}#cosmic-explorer #ce-blackhole .bh-layout{flex:0 0 auto;height:auto;grid-template-columns:minmax(0,1fr);overflow:visible}#cosmic-explorer #ce-blackhole .bh-visual-panel{height:clamp(340px,55vh,560px)}#cosmic-explorer #ce-blackhole .bh-info-panel{height:auto;max-height:none;overflow:visible!important;padding:18px 0;border-left:0;border-top:1px solid rgba(150,170,220,.18)}#cosmic-explorer #ce-blackhole .bh-splitter{display:none}#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-layout{grid-template-columns:minmax(0,1fr)}#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-info-panel{display:none!important}}
+@media(max-width:760px){#cosmic-explorer.ce-galaxy-mode .ce-nav{width:min(82vw,300px);transform:translateX(0)}#cosmic-explorer #ce-blackhole{padding:10px 12px;height:calc(100vh - 66px)}#cosmic-explorer #ce-blackhole .bh-heading>p{font-size:10px}}
+
+/* Latest refinement: keep the Black Hole information sidebar visible and remove its arrow controls. */
+#cosmic-explorer #ce-blackhole .bh-sidebar-close,
+#cosmic-explorer #ce-blackhole .bh-sidebar-reopen,
+#cosmic-explorer #ce-blackhole .bh-sidebar-top-actions{display:none!important}
+#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-layout{grid-template-columns:minmax(0,1fr) 8px minmax(320px,min(36vw,440px))!important}
+#cosmic-explorer #ce-blackhole.bh-sidebar-collapsed .bh-info-panel{display:flex!important}
+
+/* Dashboard: Explore the Universe is a button, without the redundant star icon. */
+.ce-destination-list .ce-universe-destination{width:100%;font:inherit;}
+.ce-destination-list .ce-universe-destination>span{display:grid;gap:4px;flex:1;min-width:0;}
+.ce-destination-list .ce-universe-destination:hover{background:rgba(56,189,248,.07);}
+
+/* Mission Simulator inside the persistent Explorer navigation layout. */
+#cosmic-explorer.ce-mission-mode{background:transparent!important;pointer-events:none!important}
+#cosmic-explorer.ce-mission-mode .ce-main,
+#cosmic-explorer.ce-mission-mode .ce-backdrop{display:none!important}
+#cosmic-explorer.ce-mission-mode .ce-nav{pointer-events:auto!important;position:fixed;left:0;top:0;bottom:0;height:100vh;z-index:100;background:rgba(5,12,29,.97)}
+#mission-modal{left:258px!important;width:calc(100% - 258px)!important;right:0!important;box-sizing:border-box;z-index:90!important}
+#mission-modal>div{width:min(100%,1100px);max-height:calc(100vh - 32px);overflow-y:auto}
+#cosmic-explorer .ce-mission-nav i{color:#67e8f9}
+.creator-galaxy-star-icon{color:#7dd3fc!important;filter:drop-shadow(0 0 7px rgba(125,211,252,.55));}
+@media(max-width:760px){
+  #mission-modal{left:0!important;width:100%!important;padding:12px!important;z-index:120!important}
+  #mission-modal>div{max-height:calc(100vh - 24px)}
+  #cosmic-explorer.ce-mission-mode .ce-nav{z-index:100}
+}
+
+
+/* Top header Mission Simulator uses a centered full-screen modal; Explorer navigation keeps its side-by-side layout. */
+#mission-modal.mission-top-mode{left:0!important;right:0!important;width:100%!important;padding:16px!important;z-index:200!important;}
+#mission-modal.mission-top-mode>div{width:min(100%,1100px);max-height:calc(100vh - 32px);margin:auto;}
+@media(max-width:760px){#mission-modal.mission-top-mode{left:0!important;width:100%!important;padding:12px!important;}#mission-modal.mission-top-mode>div{max-height:calc(100vh - 24px);}}
+
+/* Black Hole Explorer: expand the workspace to use the full area beside the navigation. */
+#cosmic-explorer #ce-blackhole{
+  width:100%;
+  max-width:none;
+  height:calc(100vh - 74px);
+  min-height:calc(100vh - 74px);
+  flex:1 0 auto;
+  padding:10px 14px 12px;
+}
+#cosmic-explorer #ce-blackhole .bh-layout{
+  width:100%;
+  max-width:none;
+  grid-template-columns:minmax(0,1fr) 8px minmax(350px,min(39vw,500px));
+  gap:14px;
+}
+#cosmic-explorer #ce-blackhole .bh-heading h1{font-size:clamp(23px,2.3vw,34px)}
+#cosmic-explorer #ce-blackhole .bh-heading>p{max-width:1100px;font-size:12px}
+#cosmic-explorer #ce-blackhole .bh-canvas{min-height:0}
+@media(max-width:1000px){
+  #cosmic-explorer #ce-blackhole{height:auto;min-height:calc(100vh - 74px);flex:0 0 auto}
+  #cosmic-explorer #ce-blackhole .bh-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+  #cosmic-explorer #ce-blackhole .bh-visual-panel{height:clamp(400px,62vh,700px)}
+}
+
+
+/* Final viewport fit: keep the black-hole workspace large within the area below its header. */
+#cosmic-explorer #ce-blackhole{
+  height:100%!important;
+  min-height:0!important;
+  max-height:none;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
+  padding:8px 14px 12px!important;
+}
+#cosmic-explorer #ce-blackhole .bh-layout{
+  height:calc(100% - 56px)!important;
+  min-height:440px;
+  grid-template-columns:minmax(0,1fr) 8px minmax(300px,min(30vw,400px))!important;
+  gap:12px!important;
+}
+#cosmic-explorer #ce-blackhole .bh-visual-panel{min-width:0;width:100%;height:100%;min-height:440px}
+#cosmic-explorer #ce-blackhole .bh-canvas{width:100%;height:100%!important;min-height:0;flex:1 1 auto}
+#cosmic-explorer #ce-blackhole .bh-heading{margin-bottom:6px;padding-bottom:6px}
+#cosmic-explorer #ce-blackhole .bh-heading h1{font-size:clamp(24px,2.5vw,36px)}
+@media(max-width:1000px){
+  #cosmic-explorer #ce-blackhole{height:auto!important;min-height:calc(100vh - 74px)!important;overflow:visible!important}
+  #cosmic-explorer #ce-blackhole .bh-layout{height:auto!important;min-height:0;grid-template-columns:minmax(0,1fr)!important}
+  #cosmic-explorer #ce-blackhole .bh-visual-panel{height:clamp(440px,64vh,740px);min-height:440px}
+}
+@media(max-width:560px){#cosmic-explorer #ce-blackhole .bh-visual-panel{height:clamp(380px,58vh,600px);min-height:380px}}
+
+/* Milky Way navigation view: reserve the left navigation width so the galaxy is never covered by it. */
+#cosmic-explorer.ce-galaxy-mode ~ #webgl-container,
+body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
+  left: 276px;
+  width: calc(100vw - 276px);
+}
+@media (max-width:760px) {
+  body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
+    left: min(82vw, 300px);
+    width: calc(100vw - min(82vw, 300px));
+  }
+}
+
+/* Black Hole: give the 3D scene more horizontal space and keep the gravity-wall heading compact. */
+#cosmic-explorer #ce-blackhole .bh-layout {
+  grid-template-columns: minmax(0,1fr) 8px minmax(270px,min(25vw,340px)) !important;
+  gap: 10px !important;
+}
+#cosmic-explorer #ce-blackhole .bh-heading h1 {
+  font-size: clamp(21px,2vw,29px) !important;
+  letter-spacing: -.45px;
+}
+#cosmic-explorer #ce-blackhole .bh-heading>p { font-size: 11px !important; }
+@media(max-width:1000px) {
+  #cosmic-explorer #ce-blackhole .bh-layout { grid-template-columns: minmax(0,1fr) !important; }
+}
+
+/* Milky Way navigation view: reserve the left navigation width so the galaxy is never covered by it. */
+body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
+  left: 276px;
+  width: calc(100vw - 276px);
+}
+@media (max-width:760px) {
+  body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
+    left: min(82vw, 300px);
+    width: calc(100vw - min(82vw, 300px));
+  }
+}
+
+/* Black Hole: give the 3D scene more horizontal space and keep the gravity-wall heading compact. */
+#cosmic-explorer #ce-blackhole .bh-layout {
+  grid-template-columns: minmax(0,1fr) 8px minmax(270px,min(25vw,340px)) !important;
+  gap: 10px !important;
+}
+#cosmic-explorer #ce-blackhole .bh-heading h1 {
+  font-size: clamp(21px,2vw,29px) !important;
+  letter-spacing: -.45px;
+}
+#cosmic-explorer #ce-blackhole .bh-heading>p { font-size: 11px !important; }
+@media(max-width:1000px) {
+  #cosmic-explorer #ce-blackhole .bh-layout { grid-template-columns: minmax(0,1fr) !important; }
+}

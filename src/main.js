@@ -717,6 +717,24 @@
     }
 
     function zoomToCurrentFocus() {
+      // The galaxy is a particle field rather than a single mesh, so focus it
+      // with a dedicated camera move instead of calling focusBody('MilkyWay'),
+      // which only refreshes the information panel.
+      if (currentView === 'galaxy' || focusedObjectName === 'MilkyWay') {
+        focusedObjectName = 'MilkyWay';
+        stopSpeech();
+        updateInfoPanel('MilkyWay');
+        openInfoPanel();
+        new TWEEN.Tween(controls.target)
+          .to({ x: 0, y: 0, z: 0 }, 1000)
+          .easing(TWEEN.Easing.Cubic.Out)
+          .start();
+        new TWEEN.Tween(camera.position)
+          .to({ x: 0, y: 220, z: 370 }, 1200)
+          .easing(TWEEN.Easing.Cubic.Out)
+          .start();
+        return;
+      }
       if (focusedObjectName) focusBody(focusedObjectName);
     }
 
@@ -752,12 +770,14 @@
         solarSystemGroup.visible = false;
         galaxyGroup.visible = true;
 
-        new TWEEN.Tween(controls.target).to({ x: 0, y: 0, z: 0 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
-        new TWEEN.Tween(camera.position).to({ x: 0, y: 450, z: 750 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+        // Offset the galaxy's viewing target slightly right so the galaxy itself sits a little left in the visible area beside the persistent navigation.
+        new TWEEN.Tween(controls.target).to({ x: -75, y: 0, z: 0 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+        new TWEEN.Tween(camera.position).to({ x: -75, y: 450, z: 750 }, 1200).easing(TWEEN.Easing.Cubic.Out).start();
 
         updateInfoPanel('MilkyWay');
         openInfoPanel();
       }
+      if (typeof onWindowResize === 'function' && renderer && camera) onWindowResize();
     }
 
     /* Text-To-Speech System */
@@ -996,9 +1016,22 @@
     }
 
     function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const explorerRoot = document.getElementById('cosmic-explorer');
+      const galaxyNav = explorerRoot?.classList.contains('ce-galaxy-mode')
+        ? document.getElementById('ce-nav') : null;
+      const navWidth = galaxyNav ? galaxyNav.getBoundingClientRect().width : 0;
+      const viewportWidth = Math.max(320, window.innerWidth - navWidth);
+      const container = document.getElementById('webgl-container');
+      if (container && galaxyNav) {
+        container.style.left = `${navWidth}px`;
+        container.style.width = `calc(100vw - ${navWidth}px)`;
+      } else if (container) {
+        container.style.left = '0px';
+        container.style.width = '100vw';
+      }
+      camera.aspect = viewportWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(viewportWidth, window.innerHeight);
     }
 
     window.onload = init;
@@ -1025,10 +1058,34 @@ let trajectoryCurveLine = null;
 let activeMission = null;
 let missionDistanceTag = null;
 let missionOrbitLine = null;
+let missionModalSource = 'top';
 
 function openMissionModal() {
-  document.getElementById('mission-modal').classList.remove('hidden');
+  missionModalSource = 'explorer';
+  const modal = document.getElementById('mission-modal');
+  modal.classList.remove('hidden', 'mission-top-mode');
   calculateMissionData();
+}
+
+function openTopMissionModal() {
+  missionModalSource = 'top';
+  const root = document.getElementById('cosmic-explorer');
+  root?.classList.remove('ce-mission-mode');
+  const modal = document.getElementById('mission-modal');
+  modal.classList.add('mission-top-mode');
+  modal.classList.remove('hidden');
+  calculateMissionData();
+}
+
+function openExplorerMissionSimulator() {
+  installExplorerUI();
+  const root = document.getElementById('cosmic-explorer');
+  root?.classList.remove('hidden', 'ce-galaxy-mode');
+  root?.classList.add('ce-mission-mode');
+  if (typeof switchView === 'function') switchView('solar');
+  document.querySelectorAll('.ce-nav-item.active').forEach(el => el.classList.remove('active'));
+  document.querySelector('.ce-mission-nav')?.classList.add('active');
+  openMissionModal();
 }
 
 function closeMissionModal() {
@@ -1097,6 +1154,10 @@ function createSatelliteMesh() {
 
 function start3DMissionSimulation() {
   closeMissionModal();
+  const explorerRoot = document.getElementById('cosmic-explorer');
+  explorerRoot?.classList.remove('ce-galaxy-mode');
+  if (missionModalSource === 'explorer') explorerRoot?.classList.add('ce-mission-mode');
+  else explorerRoot?.classList.remove('ce-mission-mode');
   switchView('solar');
 
   const targetName = document.getElementById('sim-target-planet').value;
@@ -1344,7 +1405,13 @@ let explorerRenderer=null, explorerScene=null, explorerCamera=null, explorerCont
 function installExplorerUI(){
  if(document.getElementById('cosmic-explorer')) return;
  const root=document.createElement('div'); root.id='cosmic-explorer'; root.className='cosmic-explorer hidden';
- root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><div class="ce-nav-heading">PLANETS</div><div id="ce-planet-list"></div><div class="ce-nav-heading">MISSION SPACECRAFT</div><div id="ce-craft-list"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content"><div class="ce-welcome"><span class="ce-pill">EXPLORE THE COSMOS</span><h1>Every world has a story.</h1><p>Choose a planet, moon, or mission spacecraft from the navigation panel to explore its rotating 3D model and discover key facts.</p><div class="ce-voice-actions ce-dashboard-voice-actions"><button class="ce-listen" id="ce-dashboard-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span></button><button class="ce-voice-pause" id="ce-dashboard-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause dashboard narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div><div class="ce-dashboard-actions"><button onclick="openExplorerObject('Earth')">Explore Earth <i class="fa-solid fa-arrow-right"></i></button><button onclick="openExplorerObject('new_horizons','craft')">Meet New Horizons</button></div></div><div class="ce-card-grid"><article><span>08</span><b>Planets</b><small>Solar System worlds</small></article><article><span>05</span><b>Featured moons</b><small>Earth, Jupiter & Saturn</small></article><article><span>04</span><b>Mission models</b><small>Spacecraft & trajectory concepts</small></article></div><div class="ce-nasa-links"><h3>Explore official NASA resources</h3><a class="ce-nasa-link" href="https://www.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-earth-americas"></i> NASA Official Website <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/solar-system/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Solar System Exploration <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/mission/" target="_blank" rel="noopener"><i class="fa-solid fa-rocket"></i> NASA Missions <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://eyes.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i> NASA Eyes <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://images.nasa.gov/" target="_blank" rel="noopener"><i class="fa-regular fa-images"></i> NASA Image & Video Library <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://www.jpl.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-satellite"></i> NASA Jet Propulsion Laboratory <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div><p class="ce-source-note">Official NASA resources open in a new tab.</p></section><section id="ce-creator" class="ce-creator hidden">
+ root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-mission-nav" onclick="openExplorerMissionSimulator()"><i class="fa-solid fa-satellite-dish"></i> Mission Simulator</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><div class="ce-nav-heading">PLANETS</div><div id="ce-planet-list"></div><div class="ce-nav-heading">MISSION SPACECRAFT</div><div id="ce-craft-list"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content">
+<div class="ce-dashboard-status"><span class="ce-status-dot"></span><span>EXPLORER STATUS</span><b>READY</b><small>Educational 3D environment · Not live spacecraft telemetry</small></div>
+<div class="ce-welcome ce-welcome-real"><span class="ce-pill">COSMIC ODYSSEY / MISSION CONTROL</span><h1>Your window into the universe.</h1><p>Explore the Solar System through interactive 3D worlds, featured moons, spacecraft models, and dedicated Milky Way and black hole experiences. Select a destination to open its model and science guide.</p><div class="ce-voice-actions ce-dashboard-voice-actions"><button class="ce-listen" id="ce-dashboard-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span></button><button class="ce-voice-pause" id="ce-dashboard-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause dashboard narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div><div class="ce-dashboard-actions"><button onclick="openExplorerObject('Earth')"><i class="fa-solid fa-earth-americas"></i> Explore Earth <i class="fa-solid fa-arrow-right"></i></button><button onclick="openExplorerObject('new_horizons','craft')"><i class="fa-solid fa-satellite"></i> Meet New Horizons</button><button onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Open Milky Way</button><button onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole Explorer</button></div></div>
+<div class="ce-dashboard-section-head"><div><span>AT A GLANCE</span><h2>Explore the collection</h2></div><small>Content available in this project</small></div>
+<div class="ce-card-grid ce-card-grid-real"><article><span>08</span><b>Planets</b><small>Mercury to Neptune</small></article><article><span>05</span><b>Featured moons</b><small>Earth, Jupiter & Saturn</small></article><article><span>04</span><b>Spacecraft models</b><small>Mission and concept models</small></article><article><span>02</span><b>Cosmic environments</b><small>Milky Way & black hole</small></article></div>
+<div class="ce-dashboard-lower"><section class="ce-dashboard-panel"><div class="ce-dashboard-section-head"><div><span>QUICK ACCESS</span><h2>Choose your next destination</h2></div></div><div class="ce-destination-list"><button onclick="openMilkyWayGalaxy()"><span class="ce-dest-icon ce-galaxy-icon"><i class="fa-solid fa-star"></i></span><span><b>Milky Way Galaxy</b><small>Explore our home galaxy in 3D</small></span><i class="fa-solid fa-chevron-right"></i></button><button onclick="openBlackHoleExplorer()"><span class="ce-dest-icon ce-blackhole-icon"><i class="fa-solid fa-circle"></i></span><span><b>Black Hole Explorer</b><small>Discover event horizons and gravity</small></span><i class="fa-solid fa-chevron-right"></i></button><button onclick="openExplorerObject('voyager','craft')"><span class="ce-dest-icon ce-craft-icon"><i class="fa-solid fa-rocket"></i></span><span><b>Interstellar Missions</b><small>Meet Voyager 1 and deep-space explorers</small></span><i class="fa-solid fa-chevron-right"></i></button><button type="button" class="ce-universe-destination" onclick="window.open('https://science.nasa.gov/universe/', '_blank', 'noopener,noreferrer')"><span><b>Explore the Universe</b><small>Read NASA science about galaxies and cosmic origins</small></span><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></section><section class="ce-dashboard-panel ce-how-panel"><div class="ce-dashboard-section-head"><div><span>HOW TO EXPLORE</span><h2>Three simple steps</h2></div></div><ol class="ce-how-list"><li><b>01</b><span><strong>Choose an object</strong><small>Use the navigation panel to select a planet, moon, or spacecraft.</small></span></li><li><b>02</b><span><strong>Explore in 3D</strong><small>Rotate the model and zoom in or out to inspect it from different angles.</small></span></li><li><b>03</b><span><strong>Learn and listen</strong><small>Read key facts, use voice narration, and follow official NASA resources.</small></span></li></ol></section></div>
+<div class="ce-nasa-links"><h3>Continue learning with official NASA resources</h3><a class="ce-nasa-link" href="https://www.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-earth-americas"></i> NASA Official Website <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/solar-system/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Solar System Exploration <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://science.nasa.gov/mission/" target="_blank" rel="noopener"><i class="fa-solid fa-rocket"></i> NASA Missions <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://eyes.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i> NASA Eyes <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://images.nasa.gov/" target="_blank" rel="noopener"><i class="fa-regular fa-images"></i> NASA Image & Video Library <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ce-nasa-link" href="https://www.jpl.nasa.gov/" target="_blank" rel="noopener"><i class="fa-solid fa-satellite"></i> NASA Jet Propulsion Laboratory <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div><p class="ce-source-note">NASA links open in a new tab. Dashboard counts describe this project's built-in educational collection; they are not live mission data.</p></section><section id="ce-creator" class="ce-creator hidden">
  <div class="creator-stars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
  <div class="creator-scroll">
   <nav class="creator-portfolio-nav" aria-label="Creator portfolio navigation"><a class="creator-nav-brand" href="#creator-home" onclick="scrollCreatorTo('creator-home');return false"><span>✦</span> ARIBA</a><div class="creator-nav-links"><a href="#creator-story" onclick="scrollCreatorTo('creator-story');return false">About</a><a href="#creator-interests" onclick="scrollCreatorTo('creator-interests');return false">Interests</a><a href="#creator-project" onclick="scrollCreatorTo('creator-project');return false">Project</a><a href="#creator-skills" onclick="scrollCreatorTo('creator-skills');return false">Focus</a><a href="#creator-contact" onclick="scrollCreatorTo('creator-contact');return false">Contact</a></div></nav>
@@ -1364,7 +1431,7 @@ function installExplorerUI(){
   <section class="creator-section creator-passion" id="creator-interests">
    <div class="creator-section-label">02 / MY COSMIC CURIOSITY</div><h2>Drawn to the beautiful unknown.</h2>
    <p>Astronomy and space exploration inspire me because they remind us how much there is still to discover. I’m fascinated by planets and their worlds, distant galaxies, stars being born and fading away, the scale of the universe, and the mysteries that continue to challenge human understanding.</p>
-   <div class="creator-interest-grid"><article><i class="fa-solid fa-earth-americas"></i><h3>Planets & Worlds</h3><p>Different landscapes, atmospheres, moons, and the possibility of worlds unlike our own.</p></article><article><i class="fa-solid fa-galaxy"></i><h3>Galaxies & Stars</h3><p>The immense beauty of galaxies, stellar life cycles, nebulae, and deep space.</p></article><article><i class="fa-solid fa-satellite"></i><h3>Space Exploration</h3><p>Human ingenuity reaching farther through spacecraft, missions, and scientific discovery.</p></article><article><i class="fa-solid fa-infinity"></i><h3>Cosmic Mysteries</h3><p>Big questions about the universe that encourage curiosity, imagination, and learning.</p></article></div>
+   <div class="creator-interest-grid"><article><i class="fa-solid fa-earth-americas"></i><h3>Planets & Worlds</h3><p>Different landscapes, atmospheres, moons, and the possibility of worlds unlike our own.</p></article><article><i class="fa-solid fa-star creator-galaxy-star-icon"></i><h3>Galaxies & Stars</h3><p>The immense beauty of galaxies, stellar life cycles, nebulae, and deep space.</p></article><article><i class="fa-solid fa-satellite"></i><h3>Space Exploration</h3><p>Human ingenuity reaching farther through spacecraft, missions, and scientific discovery.</p></article><article><i class="fa-solid fa-infinity"></i><h3>Cosmic Mysteries</h3><p>Big questions about the universe that encourage curiosity, imagination, and learning.</p></article></div>
   </section>
   <section class="creator-project" id="creator-project">
    
@@ -1433,12 +1500,12 @@ function installExplorerUI(){
 }
 function makeExplorerNavItem(label,type,key){const b=document.createElement('button');b.className='ce-nav-item';b.dataset.key=key||label;b.dataset.type=type;b.innerHTML=`<span class="ce-nav-dot ${type}"></span><span>${label}</span>`;b.onclick=()=>openExplorerObject(key||label,type);return b;}
 function toggleExplorerNav(force){const nav=document.getElementById('ce-nav');if(!nav)return;const open=typeof force==='boolean'?force:!nav.classList.contains('open');nav.classList.toggle('open',open);}
-function openExplorer(){installExplorerUI();document.getElementById('cosmic-explorer').classList.remove('hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');document.getElementById('info-panel')?.classList.add('ce-original-hidden');document.querySelector('header.glass-nav')?.classList.add('ce-original-hidden');openExplorerDashboard();}
-function openMilkyWayGalaxy(){closeExplorer();if(typeof switchView==='function'){switchView('galaxy');}else{console.error('Milky Way view switcher is unavailable.');}}
-function closeExplorer(){stopBlackHoleNarration();if(window.__bhRAF)cancelAnimationFrame(window.__bhRAF);if(window.__bhRenderer){window.__bhRenderer.dispose();window.__bhRenderer=null;}stopExplorerVoice();const root=document.getElementById('cosmic-explorer');if(root)root.classList.add('hidden');document.querySelectorAll('.ce-original-hidden').forEach(e=>e.classList.remove('ce-original-hidden'));if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();}
-function openExplorerDashboard(){stopExplorerVoice();installExplorerUI();explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey, an interactive three dimensional space explorer. From this dashboard, you can explore all eight planets, five featured moons, and four mission spacecraft models. Select an object from the navigation menu to view its rotating model, learn key facts, and listen to its information. You can also open official NASA resources for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
+function openExplorer(){installExplorerUI();document.getElementById('cosmic-explorer').classList.remove('ce-galaxy-mode','ce-mission-mode');document.getElementById('cosmic-explorer').classList.remove('hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');document.getElementById('info-panel')?.classList.add('ce-original-hidden');document.querySelector('header.glass-nav')?.classList.add('ce-original-hidden');openExplorerDashboard();}
+function openMilkyWayGalaxy(){closeMissionModal();installExplorerUI();const root=document.getElementById('cosmic-explorer');root?.classList.remove('hidden','ce-mission-mode');root?.classList.add('ce-galaxy-mode');document.getElementById('info-panel')?.classList.remove('ce-original-hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');if(typeof switchView==='function'){switchView('galaxy');}else{console.error('Milky Way view switcher is unavailable.');}document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-milkyway-nav')?.classList.add('active');requestAnimationFrame(()=>{if(typeof onWindowResize==='function')onWindowResize();});}
+function closeExplorer(){document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');stopBlackHoleNarration();if(window.__bhRAF)cancelAnimationFrame(window.__bhRAF);if(window.__bhRenderer){window.__bhRenderer.dispose();window.__bhRenderer=null;}stopExplorerVoice();const root=document.getElementById('cosmic-explorer');if(root)root.classList.add('hidden');document.querySelectorAll('.ce-original-hidden').forEach(e=>e.classList.remove('ce-original-hidden'));if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();}
+function openExplorerDashboard(){closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey mission control. This is an educational three dimensional space explorer, not a live spacecraft telemetry dashboard. Explore eight planets, five featured moons, four spacecraft models, and dedicated Milky Way and black hole environments. Select a destination to inspect its 3D model, read science facts, and listen to narration. Use the official NASA links for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
 function openCreatorPortfolio(){
- stopExplorerVoice();installExplorerUI();
+ closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
  explorerCurrentKey='Creator';
  document.getElementById('ce-dashboard').classList.add('hidden');
  document.getElementById('ce-detail').classList.add('hidden');
@@ -1453,7 +1520,7 @@ function openCreatorPortfolio(){
  if(explorerControls){explorerControls.dispose();explorerControls=null;}
 }
 function scrollCreatorTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
-function openExplorerObject(key,type){stopExplorerVoice();installExplorerUI();if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
+function openExplorerObject(key,type){closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
 let bhScene=null,bhCamera=null,bhRenderer=null,bhRAF=0,bhObject=null,bhObjectKind=null,bhDisk=null,bhParticles=null,bhRunning=false,bhProgress=0,bhLast=0,bhHasChosenObject=false;
 const BH_OBJECTS={
  satellite:{name:'Satellite',color:0x6be7ff,size:.20,title:'A satellite near a black hole',summary:'A satellite is not automatically swallowed. Its fate depends on its approach speed, direction, and the black hole’s mass.',detail:'<h3>Satellite encounter</h3><p><strong>Gravity bends the path:</strong> A passing satellite can be deflected into a new trajectory. It may fly past, become gravitationally bound, or plunge inward.</p><p><strong>Orbit is not guaranteed:</strong> A stable orbit requires the right energy and angular momentum. The animation exaggerates the pull for clarity and is not a trajectory prediction.</p><p><strong>Inside the event horizon:</strong> Escape is no longer possible. The horizon is a boundary in spacetime, not a physical shell.</p>'},
@@ -1461,8 +1528,9 @@ const BH_OBJECTS={
  star:{name:'Star',color:0xffa34d,size:.36,title:'A star approaching a black hole',summary:'If a star passes sufficiently close, tidal forces can overwhelm its self-gravity and stretch it into a stream of gas—a tidal disruption event.',detail:'<h3>Stellar tidal disruption</h3><p><strong>Tidal forces:</strong> The near side of a star experiences stronger gravity than the far side. A sufficiently close encounter can stretch and tear the star apart.</p><p><strong>Bright aftermath:</strong> Some stellar debris can form a hot accretion flow and emit radiation as it loses energy. Not every encounter creates the same outcome.</p><p><strong>Mass matters:</strong> The result depends on the star, black-hole mass, spin, and closest approach. The stretching in this scene is illustrative.</p>'},
  planet:{name:'Planet',color:0x8d9dff,size:.30,title:'A planet near a black hole',summary:'A planet may be deflected, orbit the black hole under suitable conditions, or be disrupted during an extremely close encounter.',detail:'<h3>Planetary encounter</h3><p><strong>Flyby or orbit:</strong> A planet passing at a distance may be deflected. Capture or a bound orbit depends on energy exchange and the full system dynamics.</p><p><strong>Extreme close pass:</strong> Strong tidal gradients can deform or potentially disrupt a planet, depending on its structure and distance.</p><p><strong>No single fate:</strong> There is no universal “suction” radius. The outcome depends on mass, velocity, trajectory, and physical properties.</p>'}
 };
+function toggleBlackHoleSidebar(){if(bhRenderer&&bhCamera){const mount=document.getElementById('bh-canvas');if(mount){bhCamera.aspect=mount.clientWidth/Math.max(1,mount.clientHeight);bhCamera.updateProjectionMatrix();bhRenderer.setSize(mount.clientWidth,mount.clientHeight);}}}
 function openBlackHoleExplorer(){
- stopExplorerVoice();installExplorerUI();
+ closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
  explorerCurrentKey='Black Hole';
  document.getElementById('ce-dashboard').classList.add('hidden');
  document.getElementById('ce-detail').classList.add('hidden');
@@ -1486,9 +1554,10 @@ function initBlackHoleScene(){
  mount.innerHTML='';
  bhScene=new THREE.Scene();bhScene.background=new THREE.Color(0x02030a);bhScene.fog=new THREE.FogExp2(0x02030a,.012);
  bhCamera=new THREE.PerspectiveCamera(42,mount.clientWidth/Math.max(1,mount.clientHeight),.1,180);
- let camRadius=10.5,camTheta=.12,camPhi=1.25;
+ let camRadius=5.9,camTheta=.12,camPhi=1.25;
  const updateCamera=()=>{camPhi=Math.max(.12,Math.min(Math.PI-.12,camPhi));bhCamera.position.set(camRadius*Math.sin(camPhi)*Math.sin(camTheta),camRadius*Math.cos(camPhi),camRadius*Math.sin(camPhi)*Math.cos(camTheta));bhCamera.lookAt(0,0,0);};
- updateCamera();
+ const initialRadius=8.2;camRadius=initialRadius;updateCamera();
+ const focusStart=performance.now();const focusCamera=now=>{if(!bhCamera||!bhRenderer)return;const t=Math.min(1,(now-focusStart)/1100);const eased=1-Math.pow(1-t,3);camRadius=initialRadius+(5.9-initialRadius)*eased;updateCamera();if(t<1)requestAnimationFrame(focusCamera);};requestAnimationFrame(focusCamera);
  bhRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false});bhRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));bhRenderer.setSize(mount.clientWidth,mount.clientHeight);bhRenderer.outputEncoding=THREE.sRGBEncoding||3001;mount.appendChild(bhRenderer.domElement);
  bhRenderer.domElement.style.touchAction='none';
  bhScene.add(new THREE.AmbientLight(0xffffff,.55));
@@ -1686,4 +1755,4 @@ function updateExplorerVoiceButtons(state){
  listenButtons.forEach(listen=>{listen.innerHTML=state==='playing'?'<i class="fa-solid fa-volume-high"></i><span>Playing</span>':state==='paused'?'<i class="fa-solid fa-volume-high"></i><span>Paused</span>':(listen.id==='ce-dashboard-listen'?'<i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span>':'<i class="fa-solid fa-volume-high"></i><span>Listen</span>');});
  pauseButtons.forEach(pause=>{pause.innerHTML=state==='paused'?'<i class="fa-solid fa-play"></i><span>Resume</span>':'<i class="fa-solid fa-pause"></i><span>Pause</span>';pause.disabled=state==='idle';pause.classList.toggle('is-paused',state==='paused');});
 }
-Object.assign(window, { openMissionModal, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration });  
+Object.assign(window, { openMissionModal, openTopMissionModal, openExplorerMissionSimulator, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, toggleBlackHoleSidebar, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration });  
