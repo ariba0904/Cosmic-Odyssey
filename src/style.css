@@ -978,3 +978,15 @@ body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
   #cosmic-explorer #ce-blackhole .bh-info-panel { height:auto; max-height:none; padding:14px 0; border-left:0; border-top:1px solid rgba(150,170,220,.18); overflow:visible!important; }
   #cosmic-explorer #ce-blackhole .bh-splitter { display:none; }
 }
+
+/* Reliable collapsible Planets navigation group */
+.ce-planet-list-collapsed{display:none!important}.ce-planet-list-collapsed.expanded{display:block!important}.ce-planets-toggle{margin-top:8px}.ce-planets-toggle .ce-planets-chevron{margin-left:auto;width:auto;font-size:10px;color:#67e8f9}.ce-planets-toggle[aria-expanded="true"]{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
+
+/* Collapsible Mission Spacecraft navigation, matching the Planets menu */
+#cosmic-explorer .ce-craft-list-collapsed{display:none!important}
+#cosmic-explorer .ce-craft-list-collapsed.expanded{display:block!important}
+#cosmic-explorer .ce-craft-toggle{margin-top:8px}
+#cosmic-explorer .ce-craft-toggle i:first-child{width:15px;color:#67e8f9}
+#cosmic-explorer .ce-craft-toggle .ce-craft-chevron{margin-left:auto;width:auto;font-size:10px;color:#67e8f9}
+#cosmic-explorer .ce-craft-toggle[aria-expanded="true"]{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
+#cosmic-explorer #ce-craft-list .ce-nav-item{padding-left:25px}
