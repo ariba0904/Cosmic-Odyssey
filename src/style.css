@@ -990,3 +990,12 @@ body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
 #cosmic-explorer .ce-craft-toggle .ce-craft-chevron{margin-left:auto;width:auto;font-size:10px;color:#67e8f9}
 #cosmic-explorer .ce-craft-toggle[aria-expanded="true"]{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
 #cosmic-explorer #ce-craft-list .ce-nav-item{padding-left:25px}
+
+
+/* Small glassy astronaut accent — centered in the open right side of the hero */
+.creator-hero .creator-astronaut-visual{position:absolute;right:10.5%;top:50%;translate:0 -50%;width:clamp(104px,11vw,142px);height:clamp(104px,11vw,142px);display:grid;place-items:center;border:1px solid rgba(125,211,252,.42);border-radius:36%;background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.27),rgba(59,130,246,.16) 48%,rgba(30,41,90,.34) 100%);box-shadow:0 0 34px rgba(34,211,238,.19),0 18px 48px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:2;pointer-events:none}
+.creator-hero .creator-astronaut-visual>i{font-size:clamp(48px,5.2vw,68px);color:#b9f3ff;text-shadow:0 0 10px rgba(103,232,249,.8),0 0 28px rgba(56,189,248,.65);filter:drop-shadow(0 7px 10px rgba(8,145,178,.3));z-index:2}
+.creator-hero .creator-astronaut-orbit{position:absolute;inset:-13%;border:1px solid rgba(103,232,249,.28);border-radius:50%;transform:rotate(-24deg) scaleY(.58);box-shadow:0 0 16px rgba(34,211,238,.1)}
+.creator-hero .creator-astronaut-glow{position:absolute;width:54%;height:54%;border-radius:50%;background:rgba(34,211,238,.18);filter:blur(24px)}
+@media(max-width:760px){.creator-hero .creator-astronaut-visual{right:5%;top:23%;width:76px;height:76px;border-radius:25px}.creator-hero .creator-astronaut-visual>i{font-size:38px}.creator-hero h1{max-width:82%}}
+@media(max-width:480px){.creator-hero .creator-astronaut-visual{right:2%;top:19%;width:58px;height:58px}.creator-hero .creator-astronaut-visual>i{font-size:29px}.creator-hero h1{max-width:88%}}

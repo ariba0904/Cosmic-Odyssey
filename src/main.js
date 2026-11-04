@@ -1419,6 +1419,7 @@ function installExplorerUI(){
    
    <span class="creator-kicker"><i class="fa-solid fa-sparkles"></i> THE MIND BEHIND THE MISSION</span>
    <h1>Hi, I'm <em>Jannatul Maowa Ariba</em></h1>
+   <div class="creator-astronaut-visual" aria-label="Astronaut illustration" role="img"><span class="creator-astronaut-orbit"></span><i class="fa-solid fa-user-astronaut"></i><span class="creator-astronaut-glow"></span></div>
    <p class="creator-lead">A curious mind, a student of Computer Science, and a dreamer drawn to the vastness of the universe.</p>
    <div class="creator-tags"><span> <i class="fa-solid fa-code"></i> CSE Student</span><span><i class="fa-solid fa-star"></i> Space Enthusiast</span><span><i class="fa-solid fa-rocket"></i> Learning by Building</span></div>
    <a class="creator-scroll-cta" href="#creator-story" onclick="scrollCreatorTo('creator-story');return false">Explore my universe <i class="fa-solid fa-arrow-down"></i></a>
