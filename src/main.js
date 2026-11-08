@@ -1401,13 +1401,14 @@ const EXPLORER_CRAFT = {
   new_horizons:{title:'New Horizons',subtitle:'NASA deep-space planetary probe',color:0x47c9ff,details:[['Launch','January 19, 2006'],['Primary milestone','Pluto flyby: July 14, 2015'],['Current mission','Kuiper Belt exploration'],['Agency','NASA / Johns Hopkins APL'] ],fact:'New Horizons made the first close-up exploration of Pluto and later flew past Arrokoth in the Kuiper Belt.'},
   voyager:{title:'Voyager 1',subtitle:'NASA interstellar mission spacecraft',color:0xffca67,details:[['Launch','September 5, 1977'],['Major milestone','Interstellar space entered in 2012'],['Mission focus','Outer planets and interstellar space'],['Agency','NASA / JPL'] ],fact:'Voyager 1 returned landmark images and measurements of the outer planets before continuing into interstellar space.'},
   ion_drive:{title:'Ion Propulsion Probe',subtitle:'Concept spacecraft model',color:0xb79aff,details:[['Propulsion','Electric ion propulsion (concept)'],['Thrust','Low thrust over long durations'],['Strength','High propellant efficiency'],['Status','Illustrative mission concept, not a specific NASA spacecraft'] ],fact:'Ion engines accelerate charged particles to produce efficient thrust, usually over long periods.'},
-  iss:{title:'International Space Station',subtitle:'Low Earth orbit research laboratory',color:0xc0d4e8,details:[['Launch of first module','November 20, 1998 (Zarya)'],['Orbit altitude','About 400 km (250 mi)'],['Orbital period','About 92–93 minutes'],['Crew','Typically 7 astronauts/cosmonauts'],['Partners','NASA, Roscosmos, ESA, JAXA, CSA'],['Mass','About 450 metric tons'],['Size','About the size of a football field']],fact:'The International Space Station is a continuously crewed orbital laboratory where science, technology, and international cooperation advance research in microgravity.'}
+  iss:{title:'International Space Station',subtitle:'Low Earth orbit research laboratory',color:0xc0d4e8,details:[['Launch of first module','November 20, 1998 (Zarya)'],['Orbit altitude','About 400 km (250 mi)'],['Orbital period','About 92–93 minutes'],['Crew','Typically 7 astronauts/cosmonauts'],['Partners','NASA, Roscosmos, ESA, JAXA, CSA'],['Mass','About 450 metric tons'],['Size','About the size of a football field']],fact:'The International Space Station is a continuously crewed orbital laboratory where science, technology, and international cooperation advance research in microgravity.'},
+  mars_rover:{title:'Mars Rover',subtitle:'NASA Perseverance · Jezero Crater sample caching',color:0xc2410c,details:[['Landing','18 February 2021'],['Landing site','Jezero Crater'],['Distance driven','> 28 mi (45 km) as of Oct 2026'],['Power','MMRTG (nuclear)'],['Mass','About 1,025 kg'],['Mission','Mars 2020'],['Primary goals','Ancient life search · sample return · tech demo']],fact:'NASA Perseverance landed in Jezero Crater on 18 February 2021. It seeks signs of ancient microbial life, caches samples for future return to Earth, and tests technologies for human Mars exploration. By October 2026 it had driven more than 28 miles, setting a new off-world driving record.'}
 };
 let explorerRenderer=null, explorerScene=null, explorerCamera=null, explorerControls=null, explorerModel=null, explorerRAF=0, explorerResizeObserver=null, explorerCurrentKey='Earth';
 function installExplorerUI(){
  if(document.getElementById('cosmic-explorer')) return;
  const root=document.createElement('div'); root.id='cosmic-explorer'; root.className='cosmic-explorer hidden';
- root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-mission-nav" onclick="openExplorerMissionSimulator()"><i class="fa-solid fa-satellite-dish"></i> Mission Simulator</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><button class="ce-nav-item ce-iss-nav" onclick="openISSExplorer()"><i class="fa-solid fa-satellite"></i> ISS</button><button type="button" class="ce-nav-item ce-learning-toggle" id="ce-learning-toggle" aria-expanded="false" aria-controls="ce-learning-sub" onclick="toggleExplorerLearning()"><i class="fa-solid fa-graduation-cap"></i><span>Learning Hub</span><i class="fa-solid fa-chevron-down ce-learning-chevron"></i></button><div id="ce-learning-sub" class="ce-learning-sub-collapsed"><button type="button" class="ce-nav-item ce-nav-sub ce-learning-nav" onclick="openLearningHub()"><i class="fa-solid fa-book-open"></i> Topics</button><button type="button" class="ce-nav-item ce-nav-sub ce-quiz-nav" onclick="openLearningQuizFromNav()"><i class="fa-solid fa-brain"></i> Quiz</button></div><button type="button" class="ce-nav-item ce-planets-toggle" id="ce-planets-toggle" aria-expanded="false" aria-controls="ce-planet-list" onclick="toggleExplorerPlanets()"><i class="fa-solid fa-earth-americas"></i><span>Planets</span><i class="fa-solid fa-chevron-down ce-planets-chevron"></i></button><div id="ce-planet-list" class="ce-planet-list-collapsed"></div><button type="button" class="ce-nav-item ce-craft-toggle" id="ce-craft-toggle" aria-expanded="false" aria-controls="ce-craft-list" onclick="toggleExplorerCraft()"><i class="fa-solid fa-satellite-dish"></i><span>Mission Spacecraft</span><i class="fa-solid fa-chevron-down ce-craft-chevron"></i></button><div id="ce-craft-list" class="ce-craft-list-collapsed"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content">
+ root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-mission-nav" onclick="openExplorerMissionSimulator()"><i class="fa-solid fa-satellite-dish"></i> Mission Simulator</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><button type="button" class="ce-nav-item ce-iss-toggle" id="ce-iss-toggle" aria-expanded="false" aria-controls="ce-iss-sub" onclick="toggleExplorerISS()"><i class="fa-solid fa-satellite"></i><span>ISS</span><i class="fa-solid fa-chevron-down ce-iss-chevron"></i></button><div id="ce-iss-sub" class="ce-iss-sub-collapsed"><button type="button" class="ce-nav-item ce-nav-sub ce-iss-nav" onclick="openISSExplorer()"><i class="fa-solid fa-satellite"></i> Live Tracker</button><button type="button" class="ce-nav-item ce-nav-sub ce-crew-nav" onclick="openISSCrewExplorer()"><i class="fa-solid fa-user-astronaut"></i> Current Crew</button><button type="button" class="ce-nav-item ce-nav-sub ce-iss-history-nav" onclick="openISSHistoryExplorer()"><i class="fa-solid fa-clock-rotate-left"></i> ISS History</button></div><button type="button" class="ce-nav-item ce-learning-toggle" id="ce-learning-toggle" aria-expanded="false" aria-controls="ce-learning-sub" onclick="toggleExplorerLearning()"><i class="fa-solid fa-graduation-cap"></i><span>Learning Hub</span><i class="fa-solid fa-chevron-down ce-learning-chevron"></i></button><div id="ce-learning-sub" class="ce-learning-sub-collapsed"><button type="button" class="ce-nav-item ce-nav-sub ce-learning-nav" onclick="openLearningHub()"><i class="fa-solid fa-book-open"></i> Topics</button><button type="button" class="ce-nav-item ce-nav-sub ce-quiz-nav" onclick="openLearningQuizFromNav()"><i class="fa-solid fa-brain"></i> Quiz</button></div><button type="button" class="ce-nav-item ce-planets-toggle" id="ce-planets-toggle" aria-expanded="false" aria-controls="ce-planet-list" onclick="toggleExplorerPlanets()"><i class="fa-solid fa-earth-americas"></i><span>Planets</span><i class="fa-solid fa-chevron-down ce-planets-chevron"></i></button><div id="ce-planet-list" class="ce-planet-list-collapsed"></div><button type="button" class="ce-nav-item ce-craft-toggle" id="ce-craft-toggle" aria-expanded="false" aria-controls="ce-craft-list" onclick="toggleExplorerCraft()"><i class="fa-solid fa-satellite-dish"></i><span>Mission Spacecraft</span><i class="fa-solid fa-chevron-down ce-craft-chevron"></i></button><div id="ce-craft-list" class="ce-craft-list-collapsed"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content">
 <div class="ce-dashboard-status"><span class="ce-status-dot"></span><span>EXPLORER STATUS</span><b>READY</b><small>Educational 3D environment · Not live spacecraft telemetry</small></div>
 <div class="ce-welcome ce-welcome-real"><span class="ce-pill">COSMIC ODYSSEY / MISSION CONTROL</span><h1>Your window into the universe.</h1><p>Explore the Solar System through interactive 3D worlds, featured moons, spacecraft models, and dedicated Milky Way and black hole experiences. Select a destination to open its model and science guide.</p><div class="ce-voice-actions ce-dashboard-voice-actions"><button class="ce-listen" id="ce-dashboard-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span></button><button class="ce-voice-pause" id="ce-dashboard-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause dashboard narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div><div class="ce-dashboard-actions"><button onclick="openExplorerObject('Earth')"><i class="fa-solid fa-earth-americas"></i> Explore Earth <i class="fa-solid fa-arrow-right"></i></button><button onclick="openExplorerObject('new_horizons','craft')"><i class="fa-solid fa-satellite"></i> Meet New Horizons</button><button onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Open Milky Way</button><button onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole Explorer</button></div></div>
 <div class="ce-dashboard-section-head"><div><span>AT A GLANCE</span><h2>Explore the collection</h2></div><small>Content available in this project</small></div>
@@ -1656,6 +1657,7 @@ function startISSTracker(){
 
 
 function openISSExplorer(){
+  restoreExplorer3DLayout();
   closeMissionModal();
   stopExplorerVoice();
   installExplorerUI();
@@ -1669,11 +1671,266 @@ function openISSExplorer(){
   document.getElementById('ce-top-title').textContent='International Space Station';
   document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
   document.querySelector('.ce-iss-nav')?.classList.add('active');
+  toggleExplorerISS(true);
   if(window.innerWidth<760) toggleExplorerNav(false);
   renderExplorerCraft('iss');
   document.documentElement.style.setProperty('--ce-info-width','360px');
   startISSTracker();
 }
+
+
+function clearExplorer3DAndShowInfoOnly(){
+  // Dispose any running 3D explorer scene
+  if(explorerRAF){cancelAnimationFrame(explorerRAF);explorerRAF=0;}
+  if(explorerControls){try{explorerControls.dispose();}catch(e){}explorerControls=null;}
+  if(explorerRenderer){try{explorerRenderer.dispose();}catch(e){}explorerRenderer=null;}
+  explorerModel=null;explorerScene=null;explorerCamera=null;
+  const mount=document.getElementById('ce-model-canvas');
+  if(mount) mount.innerHTML='';
+  // Hide the 3D stage, expand info panel
+  const stage=document.querySelector('#ce-detail .ce-model-stage');
+  if(stage) stage.style.display='none';
+  const detail=document.getElementById('ce-detail');
+  if(detail) detail.classList.add('ce-info-only');
+  document.documentElement.style.setProperty('--ce-info-width','100%');
+}
+function restoreExplorer3DLayout(){
+  const stage=document.querySelector('#ce-detail .ce-model-stage');
+  if(stage) stage.style.display='';
+  const detail=document.getElementById('ce-detail');
+  if(detail){
+    detail.classList.remove('ce-info-only');
+    detail.style.display='';
+  }
+  document.documentElement.style.removeProperty('--ce-info-width');
+}
+
+
+function openISSCrewExplorer(){
+  closeMissionModal();
+  stopExplorerVoice();
+  stopISSTracker();
+  installExplorerUI();
+  document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+  explorerCurrentKey='iss-crew';
+  document.getElementById('ce-dashboard')?.classList.add('hidden');
+  document.getElementById('ce-blackhole')?.classList.add('hidden');
+  document.getElementById('ce-creator')?.classList.add('hidden');
+  document.getElementById('ce-learning')?.classList.add('hidden');
+  document.getElementById('ce-detail')?.classList.remove('hidden');
+  document.getElementById('ce-top-title').textContent='Current ISS Crew';
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-crew-nav')?.classList.add('active');
+  toggleExplorerISS(true);
+  if(window.innerWidth<760) toggleExplorerNav(false);
+  document.getElementById('ce-category').textContent='EXPEDITION 75';
+  document.getElementById('ce-title').textContent='Astronauts Aboard the ISS';
+  document.getElementById('ce-subtitle').textContent='Current crew · November 2026 · NASA / Roscosmos / CSA';
+  const members = [
+    {name:'Pyotr Dubrov', role:'Commander', agency:'Roscosmos', days:116},
+    {name:'Anna Kikina', role:'Flight Engineer', agency:'Roscosmos', days:116},
+    {name:'Anil Menon', role:'Flight Engineer', agency:'NASA', days:116},
+    {name:'Jessica Watkins', role:'Flight Engineer', agency:'NASA', days:37},
+    {name:'Luke Delaney', role:'Pilot', agency:'NASA', days:37},
+    {name:'Joshua Kutryk', role:'Mission Specialist', agency:'CSA', days:37},
+    {name:'Sergey Teteryatnikov', role:'Flight Engineer', agency:'Roscosmos', days:37}
+  ];
+  const listHtml = members.map(m =>
+    `<li><strong>${m.name}</strong> — ${m.role} (${m.agency}) · <span class="crew-days-inline">${m.days} days on station</span></li>`
+  ).join('');
+  const narration = 'Current International Space Station Expedition 75 crew. Commander Pyotr Dubrov of Roscosmos, with flight engineers Anna Kikina and Anil Menon who arrived on Soyuz MS-29, and Crew-13 members Jessica Watkins, Luke Delaney, Joshua Kutryk and Sergey Teteryatnikov. They live and work in low Earth orbit conducting science, maintenance, and technology demonstrations that benefit life on Earth and prepare for future deep-space exploration.';
+  document.getElementById('ce-info-body').innerHTML = `
+    <div class="crew-hero">
+      <img src="https://live.staticflickr.com/65535/55575238755_a1e2f43a9c_b.jpg"
+           alt="Expedition 75 crew official group portrait in flight suits"
+           class="crew-group-photo"
+           loading="lazy"
+           onerror="this.src='https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/2/5/25147_PerseveranceOverview.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg'"/>
+      <p class="crew-photo-caption">Official Expedition 75 crew portrait · NASA</p>
+    </div>
+    <p class="ce-description">Seven crew members currently live and work aboard the International Space Station. They conduct hundreds of experiments in microgravity, maintain station systems, and test technologies needed for Artemis and future Mars missions. Continuous human presence on the ISS has lasted more than 25 years.</p>
+    <div class="ce-fact-block">
+      <h3><i class="fa-solid fa-users"></i> Current crew roster</h3>
+      <ul class="crew-name-list">${listHtml}</ul>
+    </div>
+    <div class="ce-fact-block">
+      <h3><i class="fa-solid fa-flask"></i> Why they are there</h3>
+      <p class="ce-description">Long-duration crews advance research in biology, materials science, Earth observation, and human health. Data from these missions improve medical care on Earth and reduce risk for deep-space exploration. The station is also a proving ground for international cooperation and commercial crew operations.</p>
+    </div>
+    <div class="crew-cta">
+      <a href="https://www.nasa.gov/mission/expedition-75/" target="_blank" rel="noopener noreferrer" class="crew-nasa-btn">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Expedition 75 — NASA official page
+      </a>
+    </div>
+    <p class="ce-accuracy-note">Days-on-station are approximate from public arrival dates (Soyuz MS-29 and Crew-13). Status current as of early November 2026.</p>`;
+  const listenBtn = document.getElementById('ce-listen');
+  if(listenBtn) listenBtn.dataset.narration = narration;
+  const src=document.getElementById('ce-source-link');
+  if(src) src.href='https://www.nasa.gov/mission/expedition-75/';
+  clearExplorer3DAndShowInfoOnly();
+}
+
+
+function openISSHistoryExplorer(){
+  closeMissionModal();
+  stopExplorerVoice();
+  stopISSTracker();
+  installExplorerUI();
+  document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+  explorerCurrentKey='iss-history';
+  ['ce-dashboard','ce-blackhole','ce-creator','ce-learning'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+  document.getElementById('ce-detail')?.classList.remove('hidden');
+  document.getElementById('ce-top-title').textContent='ISS Crew History';
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-iss-history-nav')?.classList.add('active');
+  toggleExplorerISS(true);
+  if(window.innerWidth<760) toggleExplorerNav(false);
+  document.getElementById('ce-category').textContent='HISTORY';
+  document.getElementById('ce-title').textContent='Past ISS Expeditions';
+  document.getElementById('ce-subtitle').textContent='Selected crews from continuous human presence since 2000';
+  const expeditions = [
+    {
+      title:'Expedition 1 (2000–2001)',
+      img:'https://www.nasa.gov/wp-content/uploads/2023/03/exp01-portrait.jpg',
+      names:'William Shepherd (NASA), Yuri Gidzenko & Sergei Krikalev (Roscosmos)',
+      blurb:'First long-duration crew. Began continuous human presence on 2 Nov 2000.',
+      link:'https://www.nasa.gov/mission/expedition-1/'
+    },
+    {
+      title:'Expedition 42 (2014–2015)',
+      img:'https://www.nasa.gov/wp-content/uploads/2023/03/exp42-portrait.jpg',
+      names:'Barry Wilmore, Terry Virts, Samantha Cristoforetti, Elena Serova & others',
+      blurb:'Expanded science utilization with ESA and Roscosmos partners during a full six-person crew era.',
+      link:'https://www.nasa.gov/mission/expedition-42/'
+    },
+    {
+      title:'One-Year Mission (Exp 43–46)',
+      img:'https://www.nasa.gov/wp-content/uploads/2023/03/exp44-portrait.jpg',
+      names:'Scott Kelly (NASA) & Mikhail Kornienko (Roscosmos)',
+      blurb:'Nearly a year in orbit (2015–2016) to study long-duration effects on the human body for Mars planning.',
+      link:'https://www.nasa.gov/mission/expedition-44/'
+    },
+    {
+      title:'Commercial Crew Demo-2 (2020)',
+      img:'https://www.nasa.gov/wp-content/uploads/2023/03/iss063e063109.jpg',
+      names:'Doug Hurley & Bob Behnken (NASA)',
+      blurb:'First crewed commercial flight to ISS. Restored U.S. crew launch capability with SpaceX Crew Dragon.',
+      link:'https://www.nasa.gov/commercialcrew/'
+    },
+    {
+      title:'Expedition 70 (2023–2024)',
+      img:'https://www.nasa.gov/wp-content/uploads/2023/05/exp70-portrait.jpg',
+      names:'Andreas Mogensen, Jasmin Moghbeli, Satoshi Furukawa, Loral O\'Hara & others',
+      blurb:'International long-duration crew with NASA, ESA, JAXA and Roscosmos continuing research and spacewalks.',
+      link:'https://www.nasa.gov/mission/expedition-70/'
+    },
+    {
+      title:'Expedition 75 (2026)',
+      img:'https://live.staticflickr.com/65535/55575238755_a1e2f43a9c_b.jpg',
+      names:'Pyotr Dubrov, Anna Kikina, Anil Menon, Jessica Watkins, Luke Delaney, Joshua Kutryk, Sergey Teteryatnikov',
+      blurb:'Current era long-duration expedition with Crew-13 rotation, science and station power upgrades.',
+      link:'https://www.nasa.gov/mission/expedition-75/'
+    }
+  ];
+  const cards = expeditions.map(e => `
+    <article class="hist-card">
+      <div class="hist-photo-wrap">
+        <img src="${e.img}" alt="${e.title}" class="hist-photo" loading="lazy"
+             onerror="this.style.opacity='0.4';this.alt='Image unavailable'"/>
+      </div>
+      <div class="hist-body">
+        <h4>${e.title}</h4>
+        <p class="hist-names">${e.names}</p>
+        <p class="hist-blurb">${e.blurb}</p>
+        <a href="${e.link}" target="_blank" rel="noopener noreferrer" class="crew-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> NASA page</a>
+      </div>
+    </article>`).join('');
+  const narration = 'The International Space Station has hosted continuous human presence since Expedition 1 arrived in November 2000. Early crews established systems. Later expeditions expanded science. One-year missions tested long-duration effects. The commercial crew era restored larger crews. Hundreds of astronauts and cosmonauts from many countries have lived and worked aboard the station.';
+  document.getElementById('ce-info-body').innerHTML = `
+    <p class="ce-description">Over 270 people from more than 20 countries have visited the ISS. Below are selected historical crews with official group portraits where available.</p>
+    <div class="hist-grid">${cards}</div>
+    <div class="crew-cta">
+      <a href="https://www.nasa.gov/mission_pages/station/expeditions/index.html" target="_blank" rel="noopener noreferrer" class="crew-nasa-btn">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Full NASA Expeditions index
+      </a>
+    </div>
+    <p class="ce-accuracy-note">Portraits and dates are from public NASA mission pages. Some images are representative of the era.</p>`;
+  const listenBtn = document.getElementById('ce-listen');
+  if(listenBtn) listenBtn.dataset.narration = narration;
+  const srcH=document.getElementById('ce-source-link');
+  if(srcH) srcH.href='https://www.nasa.gov/mission_pages/station/expeditions/index.html';
+  clearExplorer3DAndShowInfoOnly();
+}
+
+function openPerseveranceExplorer(){
+  closeMissionModal();
+  stopExplorerVoice();
+  stopISSTracker();
+  installExplorerUI();
+  document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+  explorerCurrentKey='perseverance';
+  ['ce-dashboard','ce-blackhole','ce-creator','ce-learning'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+  document.getElementById('ce-detail')?.classList.remove('hidden');
+  document.getElementById('ce-top-title').textContent='Perseverance Rover';
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-perseverance-nav')?.classList.add('active');
+  // also highlight Mars Rover under Mission Spacecraft
+  document.querySelector('.ce-nav-item[data-key="mars_rover"]')?.classList.add('active');
+  toggleExplorerCraft(true);
+  if(window.innerWidth<760) toggleExplorerNav(false);
+  document.documentElement.style.setProperty('--ce-info-width','420px');
+  document.getElementById('ce-category').textContent='MARS 2020';
+  document.getElementById('ce-title').textContent='Perseverance';
+  document.getElementById('ce-subtitle').textContent='NASA Mars rover · Jezero Crater · Sample caching for return';
+  const narration = 'NASA Perseverance rover landed in Jezero Crater on February 18, 2021. Its primary goals are to seek signs of ancient microbial life, collect and cache rock and soil samples for future return to Earth, and test technologies for future human exploration of Mars. By October 2026 the rover had driven more than 28 miles, setting a new off-world driving record. It carries the Ingenuity helicopter technology demonstrator and advanced instruments including SuperCam, SHERLOC, PIXL and the MOXIE oxygen generator experiment.';
+  document.getElementById('ce-info-body').innerHTML = `
+    <div class="rover-hero">
+      <img src="https://mars.nasa.gov/system/content_pages/main_images/379_perseverance.jpg" alt="NASA Perseverance Mars rover" class="rover-img" loading="lazy"
+        onerror="this.onerror=null;this.src='https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/2/5/25147_PerseveranceOverview.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg'"/>
+      <p class="rover-caption">NASA’s Perseverance rover on Mars (artist concept / mission imagery) · Credit: NASA/JPL-Caltech</p>
+    </div>
+    <div class="rover-gallery">
+      <img src="https://mars.nasa.gov/system/resources/detail_files/26812_PIA24420-Perseverance_Selfie_at_Rochette-web.jpg" alt="Perseverance selfie on Mars" loading="lazy"
+        onerror="this.style.display='none'"/>
+      <img src="https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/2/5/25612_PIA24430-panorama-1200.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg" alt="First color look at Mars from Perseverance" loading="lazy"
+        onerror="this.style.display='none'"/>
+    </div>
+    <p class="ce-description">Perseverance is NASA’s most advanced Mars rover. It explores an ancient river delta in Jezero Crater, collecting carefully documented samples that a future Mars Sample Return campaign aims to bring back to Earth laboratories.</p>
+    <div class="ce-metric-grid">
+      <article><small>Landing</small><b>18 Feb 2021</b></article>
+      <article><small>Landing site</small><b>Jezero Crater</b></article>
+      <article><small>Distance driven</small><b>&gt; 28 mi (45 km)</b></article>
+      <article><small>Power</small><b>MMRTG (nuclear)</b></article>
+      <article><small>Mass</small><b>~1,025 kg</b></article>
+      <article><small>Mission</small><b>Mars 2020</b></article>
+    </div>
+    <div class="ce-fact-block">
+      <h3><i class="fa-solid fa-microscope"></i> Science goals</h3>
+      <ul>
+        <li>Search for signs of ancient microbial life</li>
+        <li>Characterize the geology of Jezero Crater</li>
+        <li>Collect &amp; cache samples for eventual return to Earth</li>
+        <li>Test oxygen production (MOXIE) and other technologies for human missions</li>
+      </ul>
+    </div>
+    <div class="ce-fact-block">
+      <h3><i class="fa-solid fa-robot"></i> Key instruments</h3>
+      <p class="ce-description">Mastcam-Z, SuperCam, SHERLOC, PIXL, MEDA, RIMFAX, MOXIE, and the Sample Caching System. Ingenuity helicopter completed its technology demonstration phase.</p>
+    </div>
+    <div class="ce-fact-block">
+      <h3><i class="fa-solid fa-link"></i> Official NASA resources</h3>
+      <p><a href="https://science.nasa.gov/mission/mars-2020-perseverance/" target="_blank" rel="noopener noreferrer" class="crew-link">Mars 2020 Perseverance mission page</a></p>
+      <p><a href="https://mars.nasa.gov/mars2020/" target="_blank" rel="noopener noreferrer" class="crew-link">Mars Exploration Program – Perseverance</a></p>
+      <p><a href="https://science.nasa.gov/mission/mars-sample-return/" target="_blank" rel="noopener noreferrer" class="crew-link">Mars Sample Return overview</a></p>
+    </div>
+    <p class="ce-accuracy-note">Driving distance and status current as of late 2026 public updates. Always refer to the official NASA pages above for the latest.</p>`;
+  const listenBtn = document.getElementById('ce-listen');
+  if(listenBtn) listenBtn.dataset.narration = narration;
+  const srcP=document.getElementById('ce-source-link');
+  if(srcP) srcP.href='https://science.nasa.gov/mission/mars-2020-perseverance/';
+  clearExplorer3DAndShowInfoOnly();
+}
+
 
 
 /* ==========================================================================
@@ -1741,11 +1998,23 @@ function toggleExplorerLearning(force){
   btn.classList.toggle('is-open',open);
 }
 
+
+function toggleExplorerISS(force){
+  const list=document.getElementById('ce-iss-sub');
+  const btn=document.getElementById('ce-iss-toggle');
+  if(!list||!btn)return;
+  const open=typeof force==='boolean'?force:list.classList.contains('ce-iss-sub-collapsed');
+  list.classList.toggle('ce-iss-sub-collapsed',!open);
+  btn.setAttribute('aria-expanded',open?'true':'false');
+  btn.classList.toggle('is-open',open);
+}
+
 function openLearningQuizFromNav(){
   closeMissionModal();
   stopExplorerVoice();
   stopISSTracker();
   installExplorerUI();
+  restoreExplorer3DLayout();
   document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
   ['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
   document.getElementById('ce-learning')?.classList.remove('hidden');
@@ -1869,7 +2138,7 @@ function showQuizResults(){
 }
 
 
-function openLearningHub(){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));document.getElementById('ce-learning')?.classList.remove('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-quiz-view')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-learning-toggle')?.classList.add('active');toggleExplorerLearning(true);document.querySelector('.ce-learning-nav')?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
+function openLearningHub(){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();restoreExplorer3DLayout();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));document.getElementById('ce-learning')?.classList.remove('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-quiz-view')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-learning-toggle')?.classList.add('active');toggleExplorerLearning(true);document.querySelector('.ce-learning-nav')?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
 function openLearningTopic(key){const t=LEARNING_TOPICS[key];if(!t)return;const earthMap=key==='earth'?`<div class="cl-world-map"><div class="cl-map-label">WORLD MAP · SCHEMATIC</div><div class="cl-map-shapes" aria-hidden="true"><span class="cl-continent c-na"></span><span class="cl-continent c-sa"></span><span class="cl-continent c-eu"></span><span class="cl-continent c-af"></span><span class="cl-continent c-as"></span><span class="cl-continent c-au"></span><span class="cl-continent c-an"></span></div><div class="cl-map-legend"><span>LAND · 7 CONTINENTS</span><span>OCEAN · 5 NAMES</span></div></div><div class="cl-name-grid"><div><b>CONTINENTS</b><ol><li>Asia</li><li>Africa</li><li>North America</li><li>South America</li><li>Antarctica</li><li>Europe</li><li>Australia / Oceania</li></ol></div><div><b>OCEANS</b><ol><li>Pacific</li><li>Atlantic</li><li>Indian</li><li>Southern</li><li>Arctic</li></ol></div></div>`:'';document.getElementById('cl-topic-content').innerHTML=`<span class="ce-pill">${t.eyebrow}</span><h1>${t.title}</h1><p class="cl-topic-intro">${t.intro}</p>${earthMap}<div class="cl-topic-sections">${t.sections.map((x,i)=>`<article><span>0${i+1}</span><div><h3>${x[0]}</h3><p>${x[1]}</p></div></article>`).join('')}</div><aside class="cl-key-fact"><b><i class="fa-solid fa-lightbulb"></i> KEY TAKEAWAY</b><p>${t.fact}</p></aside>`;const resBtn=document.getElementById('cl-topic-resource');const resLabel=document.getElementById('cl-topic-resource-label');if(resBtn){resBtn.href=t.source||'#';resBtn.style.display=t.source?'inline-flex':'none';}if(resLabel){const isNasa=/nasa\.gov/i.test(t.source||'');const isNoaa=/noaa\.gov/i.test(t.source||'');resLabel.textContent=isNasa?'NASA resource':isNoaa?'NOAA resource':'Official science resource';}stopExplorerVoice();const sectionsText=(t.sections||[]).map((x,i)=>`Section ${i+1}. ${x[0]}. ${x[1]}`).join(' ');const narrationText=`${t.title}. ${t.intro||''} ${sectionsText} Key takeaway. ${t.fact||''}`.replace(/\s+/g,' ').trim();const listenBtn=document.getElementById('cl-topic-listen');if(listenBtn)listenBtn.dataset.narration=narrationText;document.getElementById('cl-question-grid').classList.add('hidden');document.getElementById('cl-topic-view').classList.remove('hidden');document.getElementById('ce-top-title').textContent=t.title;document.getElementById('ce-learning').scrollTop=0;}
 function backToLearningQuestions(){stopExplorerVoice();document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-quiz-view')?.classList.add('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.getElementById('ce-learning').scrollTop=0;}
 function openExplorerDashboard(){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey mission control. This is an educational three dimensional space explorer, not a live spacecraft telemetry dashboard. Explore eight planets, five featured moons, four spacecraft models, and dedicated Milky Way and black hole environments. Select a destination to inspect its 3D model, read science facts, and listen to narration. Use the official NASA links for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
@@ -1890,7 +2159,7 @@ function openCreatorPortfolio(){
  if(explorerControls){explorerControls.dispose();explorerControls=null;}
 }
 function scrollCreatorTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
-function openExplorerObject(key,type){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
+function openExplorerObject(key,type){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft'&&key==='mars_rover'){openPerseveranceExplorer();return;}if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
 let bhScene=null,bhCamera=null,bhRenderer=null,bhRAF=0,bhObject=null,bhObjectKind=null,bhDisk=null,bhParticles=null,bhRunning=false,bhProgress=0,bhLast=0,bhHasChosenObject=false;
 const BH_OBJECTS={
  satellite:{name:'Satellite',color:0x6be7ff,size:.20,title:'A satellite near a black hole',summary:'A satellite is not automatically swallowed. Its fate depends on its approach speed, direction, and the black hole’s mass.',detail:'<h3>Satellite encounter</h3><p><strong>Gravity bends the path:</strong> A passing satellite can be deflected into a new trajectory. It may fly past, become gravitationally bound, or plunge inward.</p><p><strong>Orbit is not guaranteed:</strong> A stable orbit requires the right energy and angular momentum. The animation exaggerates the pull for clarity and is not a trajectory prediction.</p><p><strong>Inside the event horizon:</strong> Escape is no longer possible. The horizon is a boundary in spacetime, not a physical shell.</p>'},
@@ -2029,7 +2298,7 @@ function resetBlackHoleSimulation(){bhRunning=false;bhProgress=0;updateBHProgres
 function updateBHProgress(){const p=document.getElementById('bh-progress');const l=document.getElementById('bh-progress-label');if(p)p.style.width=bhProgress+'%';if(l)l.textContent=Math.round(bhProgress)+'%';}
 function narrateBlackHole(){if(!('speechSynthesis'in window)){alert('Voice narration is not supported in this browser.');return;}stopBlackHoleNarration();let text;if(!bhHasChosenObject){text='Welcome to the Black Hole Explorer. A black hole is a region of spacetime where gravity is so strong that, beyond the event horizon, nothing—not even light—can escape. The event horizon is not a solid surface. The glowing accretion disk is hot gas and dust orbiting the black hole; friction and compression can heat this material and make it shine. Gravity can bend light, creating gravitational lensing. Black holes do not suck in everything from far away: objects can orbit at suitable distances, while close encounters may lead to capture or tidal disruption. A star that passes too close may be stretched into streams of debris. In the simulation, choose a satellite, aircraft, star, or planet to see that specific 3D model approach and vanish. This is an educational visual, not a numerical prediction. For further reading, consult NASA Science’s Black Holes guide.';}else{const kind=document.getElementById('bh-object-select')?.value||'satellite',d=BH_OBJECTS[kind];text=`${d.title}. ${d.summary} ${d.detail.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ')} This is an illustrative animation and does not calculate a real trajectory.`;}const utter=new SpeechSynthesisUtterance(text);utter.rate=.94;utter.pitch=1;utter.lang='en-US';window.__bhUtterance=utter;window.speechSynthesis.speak(utter);}
 function stopBlackHoleNarration(){if(window.speechSynthesis)window.speechSynthesis.cancel();window.__bhUtterance=null;}
-function explorerStartRenderer(){const mount=document.getElementById('ce-model-canvas');if(!mount)return; if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerControls){explorerControls.dispose();explorerControls=null;}if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}mount.innerHTML='';explorerScene=new THREE.Scene();explorerScene.background=new THREE.Color(0x030712);explorerScene.fog=new THREE.FogExp2(0x030712,0.018);explorerCamera=new THREE.PerspectiveCamera(45,Math.max(1,mount.clientWidth)/Math.max(1,mount.clientHeight),0.1,2000);explorerCamera.position.set(0,2.2,7);explorerRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true});explorerRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));explorerRenderer.setSize(Math.max(1,mount.clientWidth),Math.max(1,mount.clientHeight));explorerRenderer.outputEncoding=THREE.sRGBEncoding;mount.appendChild(explorerRenderer.domElement);explorerControls=new THREE.OrbitControls(explorerCamera,explorerRenderer.domElement);explorerControls.enableDamping=true;explorerControls.dampingFactor=.06;explorerControls.minDistance=2;explorerControls.maxDistance=18;explorerScene.add(new THREE.AmbientLight(0x8ba7d8,1.15));const light=new THREE.PointLight(0xffffff,2.4,100);light.position.set(5,4,6);explorerScene.add(light);const rim=new THREE.PointLight(0x3b82f6,1.5,80);rim.position.set(-5,-2,-5);explorerScene.add(rim);const starsGeo=new THREE.BufferGeometry(),arr=[];for(let i=0;i<1000;i++){arr.push((Math.random()-.5)*100,(Math.random()-.5)*100,(Math.random()-.5)*100);}starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));explorerScene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xbad7ff,size:.055,transparent:true,opacity:.8})));const resize=()=>{if(!explorerRenderer||!mount.isConnected)return;const w=Math.max(1,mount.clientWidth),h=Math.max(1,mount.clientHeight);explorerCamera.aspect=w/h;explorerCamera.updateProjectionMatrix();explorerRenderer.setSize(w,h);};if(explorerResizeObserver)explorerResizeObserver.disconnect();explorerResizeObserver=new ResizeObserver(resize);explorerResizeObserver.observe(mount);let rotating=true;window.toggleExplorerRotation=()=>{rotating=!rotating;document.getElementById('ce-rotation-btn').innerHTML=rotating?'<i class="fa-solid fa-pause"></i> Pause rotation':'<i class="fa-solid fa-play"></i> Resume rotation';};window.resetExplorerCamera=()=>{if(explorerCamera){explorerCamera.position.set(0,2.2,7);explorerControls.target.set(0,0,0);explorerControls.update();}};const tick=()=>{explorerRAF=requestAnimationFrame(tick);if(explorerModel&&rotating){explorerModel.rotation.y+=.003;const venusClouds=explorerModel.getObjectByName('venus-cloud-layer');if(venusClouds)venusClouds.rotation.y+=.008;}explorerControls?.update();explorerRenderer?.render(explorerScene,explorerCamera);};tick();return {scene:explorerScene};}
+function explorerStartRenderer(){restoreExplorer3DLayout();const mount=document.getElementById('ce-model-canvas');if(!mount)return; if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerControls){explorerControls.dispose();explorerControls=null;}if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}mount.innerHTML='';explorerScene=new THREE.Scene();explorerScene.background=new THREE.Color(0x030712);explorerScene.fog=new THREE.FogExp2(0x030712,0.018);explorerCamera=new THREE.PerspectiveCamera(45,Math.max(1,mount.clientWidth)/Math.max(1,mount.clientHeight),0.1,2000);explorerCamera.position.set(0,2.2,7);explorerRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true});explorerRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));explorerRenderer.setSize(Math.max(1,mount.clientWidth),Math.max(1,mount.clientHeight));explorerRenderer.outputEncoding=THREE.sRGBEncoding;mount.appendChild(explorerRenderer.domElement);explorerControls=new THREE.OrbitControls(explorerCamera,explorerRenderer.domElement);explorerControls.enableDamping=true;explorerControls.dampingFactor=.06;explorerControls.minDistance=2;explorerControls.maxDistance=18;explorerScene.add(new THREE.AmbientLight(0x8ba7d8,1.15));const light=new THREE.PointLight(0xffffff,2.4,100);light.position.set(5,4,6);explorerScene.add(light);const rim=new THREE.PointLight(0x3b82f6,1.5,80);rim.position.set(-5,-2,-5);explorerScene.add(rim);const starsGeo=new THREE.BufferGeometry(),arr=[];for(let i=0;i<1000;i++){arr.push((Math.random()-.5)*100,(Math.random()-.5)*100,(Math.random()-.5)*100);}starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));explorerScene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xbad7ff,size:.055,transparent:true,opacity:.8})));const resize=()=>{if(!explorerRenderer||!mount.isConnected)return;const w=Math.max(1,mount.clientWidth),h=Math.max(1,mount.clientHeight);explorerCamera.aspect=w/h;explorerCamera.updateProjectionMatrix();explorerRenderer.setSize(w,h);};if(explorerResizeObserver)explorerResizeObserver.disconnect();explorerResizeObserver=new ResizeObserver(resize);explorerResizeObserver.observe(mount);let rotating=true;window.toggleExplorerRotation=()=>{rotating=!rotating;document.getElementById('ce-rotation-btn').innerHTML=rotating?'<i class="fa-solid fa-pause"></i> Pause rotation':'<i class="fa-solid fa-play"></i> Resume rotation';};window.resetExplorerCamera=()=>{if(explorerCamera){explorerCamera.position.set(0,2.2,7);explorerControls.target.set(0,0,0);explorerControls.update();}};const tick=()=>{explorerRAF=requestAnimationFrame(tick);if(explorerModel&&rotating){explorerModel.rotation.y+=.003;const venusClouds=explorerModel.getObjectByName('venus-cloud-layer');if(venusClouds)venusClouds.rotation.y+=.008;}explorerControls?.update();explorerRenderer?.render(explorerScene,explorerCamera);};tick();return {scene:explorerScene};}
 function renderExplorerCelestial(key,type){const data=CELESTIAL_DATA[key]||{};const moon=EXPLORER_OBJECTS[key];const craftType=type==='moon';const title=moon?key:(data.name||key);const subtitle=moon?moon.subtitle:(data.subtitle||'Solar System object');document.getElementById('ce-category').textContent=moon?'NATURAL SATELLITE':'PLANET';document.getElementById('ce-title').textContent=title;document.getElementById('ce-subtitle').textContent=subtitle;const explorerPalette={Mercury:0x6f7782,Venus:0xffd21f,Earth:0x0757a6,Jupiter:0xb07f35,Saturn:0xe2bf7d};const color=moon?moon.color:(explorerPalette[key]||data.color||0x6aaeff);const metrics=moon?[['Parent body',moon.parent],['Diameter',moon.diameter],['Orbital distance',moon.distance],['Orbital period',moon.period]]:[['Mass',data.mass],['Diameter',data.meanRadius],['Temperature',data.temp],['Surface gravity',data.gravity],['Distance from Sun',data.distance],['Orbital period',data.period],['Rotation period',data.rotation],['Atmosphere',data.atmosphere]];const facts=moon?[moon.fact]:((data.facts||[]));let html=`<p class="ce-description">${moon?moon.fact:(data.desc||'Explore this celestial object in interactive 3D.')}</p><div class="ce-metric-grid">${metrics.filter(x=>x[1]).map(x=>`<article><small>${x[0]}</small><b>${x[1]}</b></article>`).join('')}</div><div class="ce-fact-block"><h3><i class="fa-solid fa-star"></i> Key facts</h3><ul>${facts.map(f=>`<li>${f}</li>`).join('')}</ul></div>`;if(!moon&&EXPLORER_MOONS[key]?.length)html+=`<div class="ce-fact-block"><h3><i class="fa-solid fa-moon"></i> Featured moons</h3><div class="ce-moon-chips">${EXPLORER_MOONS[key].map(m=>`<button onclick="openExplorerObject('${m}','moon')">${m} <i class="fa-solid fa-arrow-up-right-from-square"></i></button>`).join('')}</div></div>`;html+=`<p class="ce-accuracy-note">Figures are rounded reference values and may vary by source or epoch. Use the NASA reference for mission-grade data.</p>`;document.getElementById('ce-info-body').innerHTML=html;const source=document.getElementById('ce-source-link');source.href=moon?'https://science.nasa.gov/solar-system/moons/':`https://science.nasa.gov/solar-system/`;explorerStartRenderer();const radius=moon?1.15:(key==='Jupiter'?1.65:key==='Saturn'?1.5:key==='Sun'?1.7:1.25);explorerModel=new THREE.Group();const geo=new THREE.SphereGeometry(radius,64,48);const detailType=key==='Earth'?'earth':(['Jupiter','Saturn'].includes(key)?'bands':(['Mercury','Mars','Moon','Phobos','Deimos','Mimas'].includes(key)?'craters':'smooth'));const explorerTexturePalette={Mercury:'#626b77',Venus:'#f5c928',Earth:'#0757a6'};const textureColor=explorerTexturePalette[key]||('#'+Number(color).toString(16).padStart(6,'0'));const mat=new THREE.MeshStandardMaterial({color:0xffffff,map:createPlanetTexture(textureColor,detailType),roughness:.8,metalness:.03});const sphere=new THREE.Mesh(geo,mat);explorerModel.add(sphere);
 if(key==='Venus'){
   // Golden Venus cloud deck: a thin, translucent shell rotates independently
@@ -2217,4 +2486,4 @@ function speakLearningTopic(){
  speakNextExplorerChunk(session);
 }
 
-Object.assign(window, { openMissionModal, openTopMissionModal, openExplorerMissionSimulator, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openLearningHub, openLearningTopic, backToLearningQuestions, speakLearningTopic, openLearningQuiz, openLearningQuizFromNav, toggleExplorerLearning, startQuizRound, answerQuizOption, nextQuizQuestion, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, toggleExplorerPlanets, toggleExplorerCraft, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, toggleBlackHoleSidebar, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration, openISSExplorer, startISSTracker, stopISSTracker });  
+Object.assign(window, { openMissionModal, openTopMissionModal, openExplorerMissionSimulator, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openLearningHub, openLearningTopic, backToLearningQuestions, speakLearningTopic, openLearningQuiz, openLearningQuizFromNav, toggleExplorerLearning, startQuizRound, answerQuizOption, nextQuizQuestion, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, toggleExplorerPlanets, toggleExplorerCraft, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, toggleBlackHoleSidebar, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration, openISSExplorer, openISSCrewExplorer, openISSHistoryExplorer, openPerseveranceExplorer, toggleExplorerISS, startISSTracker, stopISSTracker });  

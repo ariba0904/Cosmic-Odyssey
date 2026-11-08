@@ -1102,3 +1102,258 @@ body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
 #cosmic-explorer .ce-learning-toggle[aria-expanded="true"],
 #cosmic-explorer .ce-learning-toggle.active{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
 #cosmic-explorer .ce-quiz-nav.active{color:#e9d5ff;border-color:#a78bfa55;background:#5b21b633}
+
+/* ===== Current Crew / History / Future / Perseverance panels ===== */
+.crew-grid{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+.crew-card{display:flex;gap:14px;padding:12px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);align-items:flex-start}
+.crew-photo{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:#1e293b;border:1px solid rgba(103,232,249,0.25)}
+.crew-meta{flex:1;min-width:0}
+.crew-meta h4{margin:0 0 2px;font-size:14px;font-weight:700;color:#f1f5f9}
+.crew-role{margin:0 0 4px;font-size:11px;color:#67e8f9;font-weight:600}
+.crew-days{margin:0 0 6px;font-size:11px;color:#a5f3fc}
+.crew-bio{margin:0 0 8px;font-size:11px;line-height:1.55;color:#94a3b8}
+.crew-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#38bdf8;text-decoration:none;font-weight:600}
+.crew-link:hover{color:#7dd3fc;text-decoration:underline}
+.rover-hero{margin:0 0 14px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)}
+.rover-img{width:100%;height:auto;display:block;max-height:220px;object-fit:cover;background:#0f172a}
+#cosmic-explorer .ce-crew-nav.active,
+#cosmic-explorer .ce-iss-history-nav.active,
+#cosmic-explorer .ce-iss-future-nav.active,
+#cosmic-explorer .ce-perseverance-nav.active{
+  background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff
+}
+@media(max-width:560px){
+  .crew-card{flex-direction:column;align-items:center;text-align:center}
+  .crew-photo{width:96px;height:96px}
+}
+
+/* ISS collapsible sub-nav (same pattern as Learning Hub) */
+#cosmic-explorer #ce-iss-sub.ce-iss-sub-collapsed{display:none!important}
+#cosmic-explorer #ce-iss-sub{display:block;padding:4px 0 6px}
+#cosmic-explorer #ce-iss-sub .ce-nav-item{padding-left:28px;font-size:12px}
+#cosmic-explorer .ce-iss-toggle{display:flex;align-items:center;gap:10px}
+#cosmic-explorer .ce-iss-toggle .ce-iss-chevron{margin-left:auto;width:auto;font-size:10px;color:#67e8f9;transition:transform .2s}
+#cosmic-explorer .ce-iss-toggle.is-open .ce-iss-chevron,
+#cosmic-explorer .ce-iss-toggle[aria-expanded="true"] .ce-iss-chevron{transform:rotate(180deg)}
+#cosmic-explorer .ce-iss-toggle[aria-expanded="true"],
+#cosmic-explorer .ce-iss-toggle.active,
+#cosmic-explorer .ce-iss-toggle.is-open{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
+#cosmic-explorer .ce-iss-nav.active,
+#cosmic-explorer .ce-crew-nav.active,
+#cosmic-explorer .ce-iss-history-nav.active,
+#cosmic-explorer .ce-iss-future-nav.active{color:#e0f2fe;border-color:#22d3ee55;background:#0e749033}
+
+/* Info-only mode: no 3D model stage (Current Crew / History / Future / Mars Rover) */
+#cosmic-explorer #ce-detail.ce-info-only{
+  display:flex;
+  flex-direction:column;
+}
+#cosmic-explorer #ce-detail.ce-info-only.hidden,
+#cosmic-explorer #ce-detail.hidden{
+  display:none!important;
+}
+#cosmic-explorer #ce-detail.ce-info-only .ce-model-stage{
+  display:none!important;
+}
+#cosmic-explorer #ce-detail.ce-info-only .ce-resize-handle{
+  display:none!important;
+}
+#cosmic-explorer #ce-detail.ce-info-only .ce-info{
+  width:100%!important;
+  max-width:100%!important;
+  flex:1;
+  border-left:none;
+}
+#cosmic-explorer #ce-detail.ce-info-only .ce-info-body,
+#cosmic-explorer #ce-detail.ce-info-only #ce-info-body{
+  max-width:900px;
+  margin:0 auto;
+}
+
+
+.history-era{margin-bottom:12px}
+.history-era .era-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#0e749055;border:1px solid #22d3ee55;color:#a5f3fc;font-size:11px;font-weight:700;margin-right:6px}
+.history-names{font-size:11px;line-height:1.55;color:#cbd5e1;margin:6px 0}
+.rover-caption{font-size:10px;color:#94a3b8;text-align:center;margin:6px 0 0;padding:0 8px}
+.rover-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 16px}
+.rover-gallery img{width:100%;height:140px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:#0f172a}
+@media(max-width:560px){.rover-gallery{grid-template-columns:1fr}}
+
+
+/* Current Crew — rectangle side-by-side cards */
+.crew-grid-rect{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:14px;
+  margin:16px 0 20px;
+}
+.crew-card-rect{
+  display:flex;
+  flex-direction:column;
+  border-radius:16px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  transition:border-color .2s, transform .2s;
+}
+.crew-card-rect:hover{border-color:rgba(103,232,249,0.35);transform:translateY(-2px)}
+.crew-photo-wrap{
+  width:100%;
+  aspect-ratio:1/1.15;
+  background:#0f172a;
+  overflow:hidden;
+}
+.crew-photo-rect{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+  display:block;
+}
+.crew-meta-rect{padding:12px 14px 14px}
+.crew-meta-rect h4{margin:0 0 4px;font-size:14px;font-weight:800;color:#f1f5f9}
+.crew-role{margin:0;font-size:11px;font-weight:700;color:#67e8f9}
+.crew-agency{margin:2px 0 6px;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
+.crew-days{margin:0 0 8px;font-size:11px;color:#a5f3fc}
+.crew-bio{margin:0 0 10px;font-size:11px;line-height:1.55;color:#94a3b8}
+.crew-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#38bdf8;text-decoration:none;font-weight:600}
+.crew-link:hover{color:#7dd3fc;text-decoration:underline}
+
+/* ISS History — Learning Hub style topic cards */
+.hist-card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+  margin:16px 0 20px;
+}
+.hist-card{
+  position:relative;
+  text-align:left;
+  min-height:160px;
+  padding:16px 16px 36px;
+  border-radius:16px;
+  border:1px solid rgba(103,232,249,0.18);
+  background:linear-gradient(145deg,rgba(12,29,52,0.95),rgba(11,16,36,0.96));
+  cursor:pointer;
+  transition:border-color .2s, transform .2s, background .2s;
+  color:inherit;
+  font:inherit;
+}
+.hist-card:hover{
+  border-color:rgba(103,232,249,0.45);
+  transform:translateY(-2px);
+  background:linear-gradient(145deg,rgba(14,40,70,0.98),rgba(12,20,40,0.98));
+}
+.hist-card-tag{
+  display:inline-block;
+  font-size:9px;
+  letter-spacing:1.2px;
+  font-weight:800;
+  color:#6fcfe2;
+  margin-bottom:8px;
+}
+.hist-card b{
+  display:block;
+  font-size:15px;
+  line-height:1.35;
+  color:#f2fbff;
+  margin:0 0 8px;
+}
+.hist-card-text{
+  display:block;
+  font-size:11px;
+  line-height:1.6;
+  color:#9fb2ca;
+}
+.hist-card-arrow{
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  color:#67e8f9;
+  font-size:12px;
+}
+
+/* Mars Rover image polish */
+.rover-hero{
+  margin:0 0 16px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.12);
+  background:#0f172a;
+}
+.rover-img{
+  width:100%;
+  height:auto;
+  max-height:280px;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+.rover-caption{
+  margin:0;
+  padding:8px 12px;
+  font-size:10px;
+  color:#94a3b8;
+  background:rgba(0,0,0,0.35);
+  text-align:center;
+}
+
+@media(max-width:560px){
+  .crew-grid-rect{grid-template-columns:1fr}
+  .hist-card-grid{grid-template-columns:1fr}
+}
+
+/* Current Crew – single group photo + roster */
+.crew-hero{margin:0 0 16px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:#0f172a}
+.crew-group-photo{width:100%;height:auto;display:block;max-height:420px;object-fit:contain;object-position:center center;background:#0b1220}
+.crew-photo-caption{margin:0;padding:8px 12px;font-size:11px;color:#94a3b8;background:rgba(0,0,0,0.35);text-align:center}
+.crew-name-list{margin:0;padding-left:18px;font-size:14px;line-height:1.85;color:#e2e8f0}
+.crew-name-list li{margin-bottom:4px}
+.crew-days-inline{color:#67e8f9;font-weight:600}
+.crew-cta{margin:18px 0 10px;display:flex;justify-content:center}
+.crew-nasa-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 18px;border-radius:12px;
+  background:linear-gradient(100deg,#0e7490,#1d4ed8);
+  color:#fff;font-weight:700;font-size:13px;text-decoration:none;
+  border:1px solid rgba(103,232,249,0.35);
+  box-shadow:0 4px 20px rgba(14,116,144,0.35);
+  transition:filter .15s, transform .15s;
+}
+.crew-nasa-btn:hover{filter:brightness(1.1);transform:translateY(-1px);color:#fff}
+
+/* ISS History – side-by-side rectangle cards */
+.hist-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:14px;
+  margin:16px 0 20px;
+}
+.hist-card{
+  display:flex;flex-direction:column;
+  border-radius:14px;overflow:hidden;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  transition:border-color .15s, transform .15s;
+}
+.hist-card:hover{border-color:rgba(103,232,249,0.35);transform:translateY(-2px)}
+.hist-photo-wrap{aspect-ratio:4/3;background:#0b1220;overflow:hidden}
+.hist-photo{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#0b1220}
+.hist-body{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column}
+.hist-body h4{margin:0 0 6px;font-size:15px;font-weight:700;color:#f1f5f9}
+.hist-names{margin:0 0 6px;font-size:13px;color:#67e8f9;font-weight:600;line-height:1.45}
+.hist-blurb{margin:0 0 10px;font-size:13px;line-height:1.6;color:#94a3b8;flex:1}
+.hist-body .crew-link{margin-top:auto}
+
+/* Mars Rover image polish */
+.rover-hero{margin:0 0 16px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#0f172a}
+.rover-img{width:100%;height:auto;display:block;max-height:280px;object-fit:cover;object-position:center}
+
+@media(max-width:560px){
+  .hist-grid{grid-template-columns:1fr}
+  .crew-group-photo{max-height:220px}
+}
+
+#cosmic-explorer #ce-detail.ce-info-only .ce-description{font-size:14px;line-height:1.7}
+#cosmic-explorer #ce-detail.ce-info-only .ce-fact-block h3{font-size:14px}
+#cosmic-explorer #ce-detail.ce-info-only .crew-photo-caption{font-size:12px}
