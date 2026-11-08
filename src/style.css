@@ -1005,6 +1005,16 @@ body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
 .cl-hero h1,.cl-topic-view h1{font:900 clamp(28px,4vw,48px)/1.15 'Orbitron',sans-serif;letter-spacing:-1px;margin:17px 0 12px;color:#e8fbff}
 .cl-hero p,.cl-topic-intro{max-width:760px;color:#a9bdd6;font-size:14px;line-height:1.85}
 .cl-hero-actions{max-width:1050px;margin:0 auto 24px;display:flex;justify-content:flex-start}.cl-back-dashboard,.cl-back-questions{display:inline-flex;align-items:center;gap:9px;padding:11px 15px;border:1px solid #67e8f955;border-radius:12px;background:#0e749033;color:#dffaff;font-weight:700;font-size:12px;cursor:pointer;transition:.2s}.cl-back-dashboard:hover,.cl-back-questions:hover{background:#0891b255;transform:translateY(-2px)}
+.cl-topic-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 18px}
+.cl-resource-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid #67e8f955;border-radius:12px;background:#0b3d5a55;color:#8cecff;font-weight:700;font-size:12px;text-decoration:none;cursor:pointer;transition:.2s}
+.cl-resource-btn:hover{background:#0891b255;color:#e0fbff;transform:translateY(-2px);border-color:#67e8f9aa}
+.cl-voice-actions{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+.cl-listen,.cl-voice-pause,.cl-voice-stop{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid #67e8f955;border-radius:11px;background:#0891b22a;color:#a5f3fc;font-weight:700;font-size:11px;cursor:pointer;transition:.2s}
+.cl-listen:hover,.cl-voice-pause:hover:not(:disabled),.cl-voice-stop:hover{background:#0891b255;transform:translateY(-1px)}
+.cl-voice-pause:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.cl-voice-stop{padding:10px 12px;background:#0b3d5a33;color:#9fd8e8}
+@media(max-width:560px){.cl-voice-actions{margin-left:0;width:100%}.cl-listen{flex:1;justify-content:center}}
+
 .cl-question-grid{max-width:1050px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
 .cl-question-card{position:relative;display:flex;min-height:220px;flex-direction:column;align-items:flex-start;text-align:left;padding:22px;border:1px solid #9bdff222;border-radius:20px;background:linear-gradient(145deg,#12243be8,#0b1428ed);color:#edfaff;cursor:pointer;overflow:hidden;transition:transform .22s,border-color .22s,box-shadow .22s}
 .cl-question-card:before{content:'';position:absolute;width:160px;height:160px;border-radius:50%;right:-70px;top:-85px;background:#22d3ee0c;filter:blur(2px)}.cl-question-card:hover{transform:translateY(-5px);border-color:#67e8f988;box-shadow:0 18px 45px #0005,0 0 24px #22d3ee12}
@@ -1014,3 +1024,81 @@ body:has(#cosmic-explorer.ce-galaxy-mode) #webgl-container {
 .cl-world-map{position:relative;max-width:720px;margin:24px auto;padding:18px;border:1px solid #67e8f92b;border-radius:18px;background:radial-gradient(ellipse at center,#0e749022,#0a1930)}.cl-map-label{font-size:9px;letter-spacing:1.3px;color:#7ddff1;font-weight:800}.cl-map-shapes{height:220px;position:relative;margin:8px auto;background:radial-gradient(ellipse at center,#0c416055,transparent 68%);overflow:hidden}.cl-continent{position:absolute;display:block;background:linear-gradient(145deg,#65c9b5,#277e83);opacity:.9;filter:drop-shadow(0 4px 8px #0005)}.c-na{left:12%;top:18%;width:21%;height:35%;border-radius:48% 40% 35% 55%;transform:rotate(-20deg);clip-path:polygon(8% 0,90% 8%,100% 45%,72% 62%,65% 100%,38% 80%,25% 52%,0 35%)}.c-sa{left:29%;top:49%;width:12%;height:43%;border-radius:50%;transform:rotate(12deg);clip-path:polygon(18% 0,90% 10%,75% 52%,48% 100%,25% 73%,0 30%)}.c-eu{left:46%;top:22%;width:13%;height:19%;border-radius:45%;clip-path:polygon(0 35%,25% 0,100% 10%,82% 90%,28% 100%)}.c-af{left:47%;top:42%;width:15%;height:40%;border-radius:45% 45% 55% 55%;clip-path:polygon(20% 0,85% 10%,100% 48%,55% 100%,20% 80%,0 32%)}.c-as{left:57%;top:15%;width:32%;height:39%;border-radius:40%;clip-path:polygon(0 20%,30% 0,100% 8%,90% 45%,65% 65%,50% 100%,25% 68%,5% 55%)}.c-au{left:78%;top:63%;width:12%;height:16%;border-radius:50%;transform:rotate(15deg)}.c-an{left:38%;bottom:0;width:29%;height:12%;border-radius:50%;clip-path:polygon(0 50%,15% 0,80% 10%,100% 55%,80% 100%,20% 90%)}.cl-map-legend{display:flex;justify-content:space-between;gap:12px;color:#8daac2;font-size:9px;letter-spacing:.8px}.cl-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:720px;margin:0 auto}.cl-name-grid>div{padding:18px;border:1px solid #ffffff14;border-radius:15px;background:#ffffff07}.cl-name-grid b{font-size:10px;letter-spacing:1.2px;color:#7de5f5}.cl-name-grid ol{padding-left:22px;margin:12px 0 0;color:#b9cce0;font-size:12px;line-height:1.9}
 @media(max-width:900px){.cl-question-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){#cosmic-explorer .ce-learning-content{padding:13px}.cl-hero{padding:20px 17px;border-radius:18px}.cl-hero h1,.cl-topic-view h1{font-size:27px}.cl-hero p,.cl-topic-intro{font-size:12px}.cl-question-grid{grid-template-columns:1fr;gap:10px}.cl-question-card{min-height:170px;padding:18px}.cl-topic-view{padding:17px 13px}.cl-name-grid{grid-template-columns:1fr}.cl-map-shapes{height:170px}.cl-map-legend{font-size:8px}}
+
+
+/* Live ISS Tracker panel */
+.iss-live-panel{margin:0 0 18px;padding:14px;border:1px solid #22d3ee44;border-radius:16px;background:linear-gradient(160deg,#0a1f38f0,#071525f5);box-shadow:0 0 24px #22d3ee12}
+.iss-live-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.iss-live-status{font-size:10px;font-weight:800;letter-spacing:.8px;color:#7dd3fc;display:inline-flex;align-items:center;gap:6px}
+.iss-live-status.iss-status-live{color:#4ade80}
+.iss-live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;display:inline-block;animation:issPulse 1.4s ease-in-out infinite}
+@keyframes issPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.85)}}
+.iss-live-map{position:relative;height:168px;border-radius:12px;overflow:hidden;margin-bottom:12px;border:1px solid #ffffff18;background:#0a1628}
+.iss-map-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:saturate(1.05) contrast(1.05) brightness(.92)}
+.iss-map-fallback .iss-map-continents{opacity:1}
+.iss-map-continents{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(180deg,#0b3a5c,#0a2744 55%,#081c33)}
+.iss-map-fallback .iss-map-continents{opacity:1}
+.iss-c{position:absolute;display:block;background:linear-gradient(145deg,#5fbf9a,#2a7a6e);opacity:.92;filter:drop-shadow(0 2px 4px #0006)}
+.iss-c-na{left:12%;top:18%;width:21%;height:35%;border-radius:48% 40% 35% 55%;transform:rotate(-20deg);clip-path:polygon(8% 0,90% 8%,100% 45%,72% 62%,65% 100%,38% 80%,25% 52%,0 35%)}
+.iss-c-sa{left:29%;top:49%;width:12%;height:43%;border-radius:50%;transform:rotate(12deg);clip-path:polygon(18% 0,90% 10%,75% 52%,48% 100%,25% 73%,0 30%)}
+.iss-c-eu{left:46%;top:22%;width:13%;height:19%;border-radius:45%;clip-path:polygon(0 35%,25% 0,100% 10%,82% 90%,28% 100%)}
+.iss-c-af{left:47%;top:42%;width:15%;height:40%;border-radius:45% 45% 55% 55%;clip-path:polygon(20% 0,85% 10%,100% 48%,55% 100%,20% 80%,0 32%)}
+.iss-c-as{left:57%;top:15%;width:32%;height:39%;border-radius:40%;clip-path:polygon(0 20%,30% 0,100% 8%,90% 45%,65% 65%,50% 100%,25% 68%,5% 55%)}
+.iss-c-au{left:78%;top:63%;width:12%;height:16%;border-radius:50%;transform:rotate(15deg)}
+.iss-c-an{left:38%;bottom:0;width:29%;height:12%;border-radius:50%;clip-path:polygon(0 50%,15% 0,80% 10%,100% 55%,80% 100%,20% 90%)}
+.iss-map-ocean-tint{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 40%,#02061755 100%);mix-blend-mode:multiply}
+.iss-map-marker{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;left:50%;top:50%;z-index:3;transition:left .9s ease,top .9s ease;pointer-events:none}
+.iss-marker-core{position:absolute;inset:4px;border-radius:50%;background:#fbbf24;border:1.5px solid #fff;box-shadow:0 0 10px #fbbf24,0 0 3px #fff}
+.iss-marker-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #fbbf24aa;animation:issRing 1.8s ease-out infinite}
+.iss-map-marker.iss-marker-pulse .iss-marker-core{animation:issMarkerPulse 2s ease-in-out infinite}
+@keyframes issRing{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@keyframes issMarkerPulse{0%,100%{box-shadow:0 0 10px #fbbf24}50%{box-shadow:0 0 16px #fbbf24,0 0 28px #f59e0b88}}
+.iss-map-footer{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:linear-gradient(transparent,#020617cc);pointer-events:none}
+.iss-map-label{font-size:8px;letter-spacing:.6px;color:#94a3b8;font-weight:700}
+.iss-map-coords{font-size:9px;font-weight:800;color:#fde68a;letter-spacing:.3px}
+.iss-live-metrics{margin-bottom:8px}
+.iss-live-note{margin:0;font-size:9px;line-height:1.5;color:#64748b}
+
+
+/* Learning Hub Quiz */
+.cl-quiz-card{border-color:#a78bfa55!important;background:linear-gradient(145deg,#1a1540f0,#0f172aee)!important}
+.cl-quiz-card:hover{border-color:#c4b5fd!important;box-shadow:0 18px 45px #0005,0 0 24px #a78bfa22!important}
+.cl-card-icon.quiz{background:linear-gradient(135deg,#7c3aed55,#22d3ee33);color:#ddd6fe}
+.cl-quiz-view{max-width:720px;margin:0 auto;padding:clamp(18px,3vw,28px);border:1px solid #a78bfa33;border-radius:24px;background:linear-gradient(145deg,#12102af5,#0b1024f5);box-shadow:0 22px 70px #0005}
+.cl-quiz-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.cl-quiz-meta{display:flex;flex-wrap:wrap;gap:8px}
+.cl-quiz-meta span{font-size:10px;font-weight:800;letter-spacing:.6px;padding:7px 10px;border-radius:999px;border:1px solid #ffffff18;background:#ffffff08;color:#c4b5fd}
+.cl-quiz-category{font-size:10px;letter-spacing:1.4px;font-weight:800;color:#67e8f9;margin:0 0 8px}
+.cl-quiz-play h2{font:800 clamp(18px,2.4vw,26px)/1.35 'Orbitron',sans-serif;color:#f1f5f9;margin:0 0 18px}
+.cl-quiz-options{display:grid;gap:10px}
+.cl-quiz-option{text-align:left;padding:14px 16px;border-radius:14px;border:1px solid #ffffff18;background:#ffffff08;color:#e2e8f0;font-size:13px;line-height:1.5;cursor:pointer;transition:.18s}
+.cl-quiz-option:hover:not(:disabled){border-color:#67e8f988;background:#22d3ee15;transform:translateY(-1px)}
+.cl-quiz-option:disabled{cursor:default}
+.cl-quiz-option.is-correct{border-color:#4ade80aa;background:#14532d55;color:#bbf7d0}
+.cl-quiz-option.is-wrong{border-color:#f87171aa;background:#7f1d1d44;color:#fecaca}
+.cl-quiz-feedback{margin:14px 0 0;padding:12px 14px;border-radius:12px;font-size:12px;line-height:1.7}
+.cl-quiz-feedback.is-correct{background:#14532d44;border:1px solid #4ade8066;color:#bbf7d0}
+.cl-quiz-feedback.is-wrong{background:#7f1d1d33;border:1px solid #f8717166;color:#fecaca}
+.cl-quiz-next{margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #67e8f955;background:#0e749044;color:#e0f2fe;font-weight:700;font-size:12px;cursor:pointer}
+.cl-quiz-next:hover{background:#0891b255}
+.cl-quiz-results{text-align:center;padding:12px 8px 8px}
+.cl-quiz-results h2{font:800 clamp(22px,3vw,32px) 'Orbitron',sans-serif;margin:14px 0 10px;color:#f8fafc}
+.cl-quiz-results-score{font-size:18px;font-weight:800;color:#a5f3fc;margin:0 0 10px}
+.cl-quiz-results-note{font-size:12px;line-height:1.7;color:#94a3b8;max-width:480px;margin:0 auto 22px}
+.cl-quiz-results-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.cl-quiz-again{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #a78bfa66;background:#5b21b644;color:#e9d5ff;font-weight:700;font-size:12px;cursor:pointer}
+.cl-quiz-again:hover{background:#6d28d955}
+@media(max-width:560px){.cl-quiz-view{padding:16px 12px}.cl-quiz-option{font-size:12px;padding:12px}}
+
+
+/* Learning Hub sub-nav (Topics + Quiz) */
+#cosmic-explorer #ce-learning-sub.ce-learning-sub-collapsed{display:none!important}
+#cosmic-explorer #ce-learning-sub{display:block;padding:4px 0 6px}
+#cosmic-explorer #ce-learning-sub .ce-nav-item{padding-left:28px;font-size:12px}
+#cosmic-explorer .ce-learning-toggle{display:flex;align-items:center;gap:10px}
+#cosmic-explorer .ce-learning-toggle .ce-learning-chevron{margin-left:auto;width:auto;font-size:10px;color:#67e8f9;transition:transform .2s}
+#cosmic-explorer .ce-learning-toggle.is-open .ce-learning-chevron,
+#cosmic-explorer .ce-learning-toggle[aria-expanded="true"] .ce-learning-chevron{transform:rotate(180deg)}
+#cosmic-explorer .ce-learning-toggle[aria-expanded="true"],
+#cosmic-explorer .ce-learning-toggle.active{background:linear-gradient(100deg,#0e74904d,#6d28d933);border-color:#22d3ee3d;color:#fff}
+#cosmic-explorer .ce-quiz-nav.active{color:#e9d5ff;border-color:#a78bfa55;background:#5b21b633}

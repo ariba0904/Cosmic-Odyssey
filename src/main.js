@@ -1400,13 +1400,14 @@ const EXPLORER_CRAFT = {
   hohmann:{title:'Hohmann Transfer Model',subtitle:'Efficient orbital transfer trajectory',color:0x35d9ff,details:[['Model','Hohmann transfer'],['Purpose','Illustrates a two-impulse transfer between circular orbits'],['Key concept','Efficiency trades travel time for lower idealized Δv'],['Caveat','A trajectory model, not a physical spacecraft'] ],fact:'A Hohmann transfer is an idealized orbital maneuver; real missions include launch windows, gravity assists, and other constraints.'},
   new_horizons:{title:'New Horizons',subtitle:'NASA deep-space planetary probe',color:0x47c9ff,details:[['Launch','January 19, 2006'],['Primary milestone','Pluto flyby: July 14, 2015'],['Current mission','Kuiper Belt exploration'],['Agency','NASA / Johns Hopkins APL'] ],fact:'New Horizons made the first close-up exploration of Pluto and later flew past Arrokoth in the Kuiper Belt.'},
   voyager:{title:'Voyager 1',subtitle:'NASA interstellar mission spacecraft',color:0xffca67,details:[['Launch','September 5, 1977'],['Major milestone','Interstellar space entered in 2012'],['Mission focus','Outer planets and interstellar space'],['Agency','NASA / JPL'] ],fact:'Voyager 1 returned landmark images and measurements of the outer planets before continuing into interstellar space.'},
-  ion_drive:{title:'Ion Propulsion Probe',subtitle:'Concept spacecraft model',color:0xb79aff,details:[['Propulsion','Electric ion propulsion (concept)'],['Thrust','Low thrust over long durations'],['Strength','High propellant efficiency'],['Status','Illustrative mission concept, not a specific NASA spacecraft'] ],fact:'Ion engines accelerate charged particles to produce efficient thrust, usually over long periods.'}
+  ion_drive:{title:'Ion Propulsion Probe',subtitle:'Concept spacecraft model',color:0xb79aff,details:[['Propulsion','Electric ion propulsion (concept)'],['Thrust','Low thrust over long durations'],['Strength','High propellant efficiency'],['Status','Illustrative mission concept, not a specific NASA spacecraft'] ],fact:'Ion engines accelerate charged particles to produce efficient thrust, usually over long periods.'},
+  iss:{title:'International Space Station',subtitle:'Low Earth orbit research laboratory',color:0xc0d4e8,details:[['Launch of first module','November 20, 1998 (Zarya)'],['Orbit altitude','About 400 km (250 mi)'],['Orbital period','About 92–93 minutes'],['Crew','Typically 7 astronauts/cosmonauts'],['Partners','NASA, Roscosmos, ESA, JAXA, CSA'],['Mass','About 450 metric tons'],['Size','About the size of a football field']],fact:'The International Space Station is a continuously crewed orbital laboratory where science, technology, and international cooperation advance research in microgravity.'}
 };
 let explorerRenderer=null, explorerScene=null, explorerCamera=null, explorerControls=null, explorerModel=null, explorerRAF=0, explorerResizeObserver=null, explorerCurrentKey='Earth';
 function installExplorerUI(){
  if(document.getElementById('cosmic-explorer')) return;
  const root=document.createElement('div'); root.id='cosmic-explorer'; root.className='cosmic-explorer hidden';
- root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-mission-nav" onclick="openExplorerMissionSimulator()"><i class="fa-solid fa-satellite-dish"></i> Mission Simulator</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><button class="ce-nav-item ce-learning-nav" onclick="openLearningHub()"><i class="fa-solid fa-graduation-cap"></i> Learning Hub</button><button type="button" class="ce-nav-item ce-planets-toggle" id="ce-planets-toggle" aria-expanded="false" aria-controls="ce-planet-list" onclick="toggleExplorerPlanets()"><i class="fa-solid fa-earth-americas"></i><span>Planets</span><i class="fa-solid fa-chevron-down ce-planets-chevron"></i></button><div id="ce-planet-list" class="ce-planet-list-collapsed"></div><button type="button" class="ce-nav-item ce-craft-toggle" id="ce-craft-toggle" aria-expanded="false" aria-controls="ce-craft-list" onclick="toggleExplorerCraft()"><i class="fa-solid fa-satellite-dish"></i><span>Mission Spacecraft</span><i class="fa-solid fa-chevron-down ce-craft-chevron"></i></button><div id="ce-craft-list" class="ce-craft-list-collapsed"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content">
+ root.innerHTML=`<div class="ce-backdrop"></div><aside class="ce-nav" id="ce-nav"><div class="ce-brand"><span class="ce-brand-icon">✦</span><div><b>COSMIC ODYSSEY</b><small>OBJECT EXPLORER</small></div><button class="ce-close-nav" onclick="toggleExplorerNav(false)" aria-label="Close navigation">×</button></div><button class="ce-nav-item ce-dashboard" onclick="openExplorerDashboard()"><i class="fa-solid fa-gauge-high"></i> Dashboard</button><button class="ce-nav-item ce-milkyway-nav" onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Milky Way Galaxy</button><button class="ce-nav-item ce-mission-nav" onclick="openExplorerMissionSimulator()"><i class="fa-solid fa-satellite-dish"></i> Mission Simulator</button><button class="ce-nav-item ce-blackhole-nav" onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole</button><button class="ce-nav-item ce-iss-nav" onclick="openISSExplorer()"><i class="fa-solid fa-satellite"></i> ISS</button><button type="button" class="ce-nav-item ce-learning-toggle" id="ce-learning-toggle" aria-expanded="false" aria-controls="ce-learning-sub" onclick="toggleExplorerLearning()"><i class="fa-solid fa-graduation-cap"></i><span>Learning Hub</span><i class="fa-solid fa-chevron-down ce-learning-chevron"></i></button><div id="ce-learning-sub" class="ce-learning-sub-collapsed"><button type="button" class="ce-nav-item ce-nav-sub ce-learning-nav" onclick="openLearningHub()"><i class="fa-solid fa-book-open"></i> Topics</button><button type="button" class="ce-nav-item ce-nav-sub ce-quiz-nav" onclick="openLearningQuizFromNav()"><i class="fa-solid fa-brain"></i> Quiz</button></div><button type="button" class="ce-nav-item ce-planets-toggle" id="ce-planets-toggle" aria-expanded="false" aria-controls="ce-planet-list" onclick="toggleExplorerPlanets()"><i class="fa-solid fa-earth-americas"></i><span>Planets</span><i class="fa-solid fa-chevron-down ce-planets-chevron"></i></button><div id="ce-planet-list" class="ce-planet-list-collapsed"></div><button type="button" class="ce-nav-item ce-craft-toggle" id="ce-craft-toggle" aria-expanded="false" aria-controls="ce-craft-list" onclick="toggleExplorerCraft()"><i class="fa-solid fa-satellite-dish"></i><span>Mission Spacecraft</span><i class="fa-solid fa-chevron-down ce-craft-chevron"></i></button><div id="ce-craft-list" class="ce-craft-list-collapsed"></div><div class="ce-nav-foot">NASA data links included where applicable</div><button class="ce-nav-item ce-creator-nav" onclick="openCreatorPortfolio()"><i class="fa-solid fa-user-astronaut"></i> Get to Know the Creator</button></aside><main class="ce-main"><header class="ce-top"><button class="ce-hamburger" onclick="toggleExplorerNav()" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><div><span class="ce-eyebrow">INTERACTIVE 3D DATABASE</span><h2 id="ce-top-title">Dashboard</h2></div><button class="ce-exit" onclick="closeExplorer()"><i class="fa-solid fa-arrow-left"></i><span>Back to Solar System</span></button></header><section id="ce-dashboard" class="ce-dashboard-content">
 <div class="ce-dashboard-status"><span class="ce-status-dot"></span><span>EXPLORER STATUS</span><b>READY</b><small>Educational 3D environment · Not live spacecraft telemetry</small></div>
 <div class="ce-welcome ce-welcome-real"><span class="ce-pill">COSMIC ODYSSEY / MISSION CONTROL</span><h1>Your window into the universe.</h1><p>Explore the Solar System through interactive 3D worlds, featured moons, spacecraft models, and dedicated Milky Way and black hole experiences. Select a destination to open its model and science guide.</p><div class="ce-voice-actions ce-dashboard-voice-actions"><button class="ce-listen" id="ce-dashboard-listen" onclick="speakExplorerInfo()"><i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span></button><button class="ce-voice-pause" id="ce-dashboard-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause dashboard narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button></div><div class="ce-dashboard-actions"><button onclick="openExplorerObject('Earth')"><i class="fa-solid fa-earth-americas"></i> Explore Earth <i class="fa-solid fa-arrow-right"></i></button><button onclick="openExplorerObject('new_horizons','craft')"><i class="fa-solid fa-satellite"></i> Meet New Horizons</button><button onclick="openMilkyWayGalaxy()"><i class="fa-solid fa-star"></i> Open Milky Way</button><button onclick="openBlackHoleExplorer()"><i class="fa-solid fa-circle"></i> Black Hole Explorer</button></div></div>
 <div class="ce-dashboard-section-head"><div><span>AT A GLANCE</span><h2>Explore the collection</h2></div><small>Content available in this project</small></div>
@@ -1421,10 +1422,34 @@ function installExplorerUI(){
   <button class="cl-question-card" onclick="openLearningTopic('earth')"><span class="cl-card-icon earth"><i class="fa-solid fa-earth-americas"></i></span><small>OUR HOME PLANET</small><b>How are Earth's land and oceans divided?</b><span>Meet the seven continents and five commonly named oceans.</span><i class="fa-solid fa-arrow-right cl-card-arrow"></i></button>
   <button class="cl-question-card" onclick="openLearningTopic('seasons')"><span class="cl-card-icon seasons"><i class="fa-solid fa-sun"></i></span><small>EARTH'S MOTION</small><b>Why do we have seasons?</b><span>Understand Earth's tilted axis and yearly orbit.</span><i class="fa-solid fa-arrow-right cl-card-arrow"></i></button>
   <button class="cl-question-card" onclick="openLearningTopic('moon')"><span class="cl-card-icon moon"><i class="fa-solid fa-moon"></i></span><small>MOON & EARTH</small><b>Why does the Moon change shape?</b><span>See how lunar phases depend on sunlight and viewing angle.</span><i class="fa-solid fa-arrow-right cl-card-arrow"></i></button>
+  <button class="cl-question-card cl-quiz-card" onclick="openLearningQuiz()"><span class="cl-card-icon quiz"><i class="fa-solid fa-brain"></i></span><small>TEST YOUR KNOWLEDGE</small><b>Space Quiz</b><span>Play rounds of unique questions. No repeats until the full bank is used.</span><i class="fa-solid fa-arrow-right cl-card-arrow"></i></button>
  </div>
- <article id="cl-topic-view" class="cl-topic-view hidden"><button class="cl-back-questions" onclick="backToLearningQuestions()"><i class="fa-solid fa-arrow-left"></i> Back to questions</button><div id="cl-topic-content"></div></article>
+ <div id="cl-quiz-view" class="cl-quiz-view hidden">
+  <div class="cl-quiz-toolbar">
+   <button class="cl-back-questions" onclick="backToLearningQuestions()"><i class="fa-solid fa-arrow-left"></i> Back to questions</button>
+   <div class="cl-quiz-meta"><span id="cl-quiz-round">Round 1</span><span id="cl-quiz-progress">Question 1 / 5</span><span id="cl-quiz-score">Score 0</span></div>
+  </div>
+  <div id="cl-quiz-play" class="cl-quiz-play">
+   <p class="cl-quiz-category" id="cl-quiz-category">SPACE</p>
+   <h2 id="cl-quiz-question">Loading…</h2>
+   <div id="cl-quiz-options" class="cl-quiz-options"></div>
+   <p id="cl-quiz-feedback" class="cl-quiz-feedback hidden"></p>
+   <button id="cl-quiz-next" class="cl-quiz-next hidden" onclick="nextQuizQuestion()">Next question <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+  <div id="cl-quiz-results" class="cl-quiz-results hidden">
+   <span class="ce-pill">ROUND COMPLETE</span>
+   <h2 id="cl-quiz-results-title">Nice work!</h2>
+   <p id="cl-quiz-results-score" class="cl-quiz-results-score"></p>
+   <p id="cl-quiz-results-note" class="cl-quiz-results-note"></p>
+   <div class="cl-quiz-results-actions">
+    <button class="cl-quiz-again" onclick="startQuizRound()"><i class="fa-solid fa-rotate-right"></i> Next round</button>
+    <button class="cl-back-questions" onclick="backToLearningQuestions()"><i class="fa-solid fa-list"></i> Back to topics</button>
+   </div>
+  </div>
+ </div>
+ <div id="cl-topic-view" class="cl-topic-view hidden"><div class="cl-topic-toolbar"><button class="cl-back-questions" onclick="backToLearningQuestions()"><i class="fa-solid fa-arrow-left"></i> Back to questions</button><a id="cl-topic-resource" class="cl-resource-btn" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span id="cl-topic-resource-label">NASA resource</span></a><div class="cl-voice-actions"><button class="cl-listen" id="cl-topic-listen" onclick="speakLearningTopic()"><i class="fa-solid fa-volume-high"></i><span>Listen</span></button><button class="cl-voice-pause" id="cl-topic-voice-pause" onclick="toggleExplorerVoicePause()" aria-label="Pause narration" disabled><i class="fa-solid fa-pause"></i><span>Pause</span></button><button class="cl-voice-stop" id="cl-topic-voice-stop" onclick="stopExplorerVoice()" aria-label="Stop narration" title="Stop narration"><i class="fa-solid fa-stop"></i></button></div></div><div id="cl-topic-content"></div>
  <p class="cl-footer-note">Learning guides are introductory summaries. Follow the linked NASA and NOAA resources for deeper study.</p>
-</section><section id="ce-creator" class="ce-creator hidden">
+</div></section><section id="ce-creator" class="ce-creator hidden">
  <div class="creator-stars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
  <div class="creator-scroll">
   <nav class="creator-portfolio-nav" aria-label="Creator portfolio navigation"><a class="creator-nav-brand" href="#creator-home" onclick="scrollCreatorTo('creator-home');return false"><span>✦</span> ARIBA</a><div class="creator-nav-links"><a href="#creator-story" onclick="scrollCreatorTo('creator-story');return false">About</a><a href="#creator-interests" onclick="scrollCreatorTo('creator-interests');return false">Interests</a><a href="#creator-project" onclick="scrollCreatorTo('creator-project');return false">Project</a><a href="#creator-skills" onclick="scrollCreatorTo('creator-skills');return false">Focus</a><a href="#creator-contact" onclick="scrollCreatorTo('creator-contact');return false">Contact</a></div></nav>
@@ -1518,7 +1543,7 @@ function toggleExplorerPlanets(force){const list=document.getElementById('ce-pla
 function toggleExplorerCraft(force){const list=document.getElementById('ce-craft-list');const button=document.getElementById('ce-craft-toggle');if(!list||!button)return;const expanded=typeof force==='boolean'?force:!list.classList.contains('expanded');list.classList.toggle('expanded',expanded);list.classList.toggle('ce-craft-list-collapsed',!expanded);button.setAttribute('aria-expanded',String(expanded));const icon=button.querySelector('.ce-craft-chevron');if(icon){icon.classList.toggle('fa-chevron-down',!expanded);icon.classList.toggle('fa-chevron-up',expanded);}}
 function openExplorer(){installExplorerUI();document.getElementById('cosmic-explorer').classList.remove('ce-galaxy-mode','ce-mission-mode');document.getElementById('cosmic-explorer').classList.remove('hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');document.getElementById('info-panel')?.classList.add('ce-original-hidden');document.querySelector('header.glass-nav')?.classList.add('ce-original-hidden');openExplorerDashboard();}
 function openMilkyWayGalaxy(){closeMissionModal();installExplorerUI();document.getElementById('ce-learning')?.classList.add('hidden');const root=document.getElementById('cosmic-explorer');root?.classList.remove('hidden','ce-mission-mode');root?.classList.add('ce-galaxy-mode');document.getElementById('info-panel')?.classList.remove('ce-original-hidden');document.getElementById('quick-dock')?.classList.add('ce-original-hidden');if(typeof switchView==='function'){switchView('galaxy');}else{console.error('Milky Way view switcher is unavailable.');}document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-milkyway-nav')?.classList.add('active');requestAnimationFrame(()=>{if(typeof onWindowResize==='function')onWindowResize();});}
-function closeExplorer(){/* Always restore the original Solar System view, regardless of the last opened explorer section. */if(typeof switchView==='function'&&currentView!=='solar')switchView('solar');document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');stopBlackHoleNarration();if(window.__bhRAF)cancelAnimationFrame(window.__bhRAF);if(window.__bhRenderer){window.__bhRenderer.dispose();window.__bhRenderer=null;}stopExplorerVoice();const root=document.getElementById('cosmic-explorer');if(root)root.classList.add('hidden');document.querySelectorAll('.ce-original-hidden').forEach(e=>e.classList.remove('ce-original-hidden'));if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();}
+function closeExplorer(){stopISSTracker();/* Always restore the original Solar System view, regardless of the last opened explorer section. */if(typeof switchView==='function'&&currentView!=='solar')switchView('solar');document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');stopBlackHoleNarration();if(window.__bhRAF)cancelAnimationFrame(window.__bhRAF);if(window.__bhRenderer){window.__bhRenderer.dispose();window.__bhRenderer=null;}stopExplorerVoice();const root=document.getElementById('cosmic-explorer');if(root)root.classList.add('hidden');document.querySelectorAll('.ce-original-hidden').forEach(e=>e.classList.remove('ce-original-hidden'));if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();}
 const LEARNING_TOPICS={
  sky:{eyebrow:'ATMOSPHERE & LIGHT',title:'Why is the sky blue?',intro:'Sunlight looks white, but it contains all the colours of the visible spectrum. As sunlight travels through Earth’s atmosphere, tiny gas molecules scatter shorter wavelengths more strongly than longer wavelengths.',sections:[['The key idea: Rayleigh scattering','Blue light has a shorter wavelength than red light, so air molecules scatter blue light in many directions more effectively. When we look away from the Sun during the day, much of the scattered light reaching our eyes is blue.'],['Why not violet?','Violet is scattered even more strongly, but sunlight contains less violet than blue, and our eyes are less sensitive to violet. The combined effect makes the daytime sky appear blue.'],['Why are sunsets red or orange?','At sunrise and sunset, sunlight travels through a longer path in the atmosphere. Much of the blue light is scattered out of the direct beam, leaving more red and orange light to reach our eyes.']],fact:'The colour of the sky is caused mainly by scattering in the atmosphere—not by the ocean reflecting blue upward.',source:'https://www.nesdis.noaa.gov/about/k-12-education/atmosphere/why-the-sky-blue'},
  aurora:{eyebrow:'EARTH & SPACE WEATHER',title:'What is an aurora?',intro:'An aurora is a natural light display that usually appears near Earth’s polar regions. It happens when charged particles from space interact with gases high in Earth’s atmosphere.',sections:[['Where does the energy come from?','The Sun releases a continuous flow of charged particles called the solar wind. Earth’s magnetic field guides many of these particles toward regions near the magnetic poles.'],['Why does it glow?','Particles collide with oxygen and nitrogen in the upper atmosphere, transferring energy to them. As those gases release the energy, they emit light.'],['Why different colours?','Oxygen commonly produces green and sometimes red light; nitrogen can contribute blue, purple, and pink tones. The colour depends on the gas and altitude.']],fact:'Auroras are called aurora borealis in the north and aurora australis in the south.',source:'https://science.nasa.gov/sun/auroras/'},
@@ -1527,10 +1552,327 @@ const LEARNING_TOPICS={
  seasons:{eyebrow:'EARTH’S MOTION',title:'Why do we have seasons?',intro:'Earth has seasons because its rotation axis is tilted about 23.4° relative to the plane of its orbit around the Sun. As Earth travels around the Sun, each hemisphere receives different angles and durations of sunlight.',sections:[['Tilt—not distance—is the main reason','When the Northern Hemisphere tilts toward the Sun, it receives more direct sunlight and has longer days: summer. At the same time, the Southern Hemisphere tilts away and experiences winter.'],['What happens at the equinox?','Around the March and September equinoxes, neither hemisphere is tilted strongly toward the Sun. Day and night are approximately equal in length worldwide.'],['Opposite seasons','The Northern and Southern Hemispheres experience opposite seasons. Earth’s slightly elliptical orbit is not the main cause of seasonal temperature changes.']],fact:'Seasons are opposite north and south: July is generally summer in the Northern Hemisphere and winter in the Southern Hemisphere.',source:'https://spaceplace.nasa.gov/seasons/en/'},
  moon:{eyebrow:'MOON & EARTH',title:'Why does the Moon change shape?',intro:'The Moon does not actually change shape. As it orbits Earth, we see different portions of its sunlit half. These changing views are called lunar phases.',sections:[['Sunlight illuminates half the Moon','At any moment, the Sun lights roughly half of the Moon. The Moon’s phase depends on how much of that illuminated half is visible from Earth.'],['The main phases','The cycle moves through new Moon, waxing crescent, first quarter, waxing gibbous, full Moon, waning gibbous, last (third) quarter, and waning crescent. One full phase cycle takes about 29.5 days.'],['It is not usually Earth’s shadow','Earth’s shadow causes a lunar eclipse, not the normal monthly phases. During ordinary phases, we are simply viewing the Moon’s sunlit side from different angles.']],fact:'The Moon rotates once in about the same time it takes to orbit Earth, which is why we mostly see the same lunar face.',source:'https://science.nasa.gov/moon/moon-phases/' }
 };
-function openLearningHub(){closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));document.getElementById('ce-learning')?.classList.remove('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-learning-nav')?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
-function openLearningTopic(key){const t=LEARNING_TOPICS[key];if(!t)return;const earthMap=key==='earth'?`<div class="cl-world-map"><div class="cl-map-label">WORLD MAP · SCHEMATIC</div><div class="cl-map-shapes" aria-hidden="true"><span class="cl-continent c-na"></span><span class="cl-continent c-sa"></span><span class="cl-continent c-eu"></span><span class="cl-continent c-af"></span><span class="cl-continent c-as"></span><span class="cl-continent c-au"></span><span class="cl-continent c-an"></span></div><div class="cl-map-legend"><span>LAND · 7 CONTINENTS</span><span>OCEAN · 5 NAMES</span></div></div><div class="cl-name-grid"><div><b>CONTINENTS</b><ol><li>Asia</li><li>Africa</li><li>North America</li><li>South America</li><li>Antarctica</li><li>Europe</li><li>Australia / Oceania</li></ol></div><div><b>OCEANS</b><ol><li>Pacific</li><li>Atlantic</li><li>Indian</li><li>Southern</li><li>Arctic</li></ol></div></div>`:'';document.getElementById('cl-topic-content').innerHTML=`<span class="ce-pill">${t.eyebrow}</span><h1>${t.title}</h1><p class="cl-topic-intro">${t.intro}</p>${earthMap}<div class="cl-topic-sections">${t.sections.map((x,i)=>`<article><span>0${i+1}</span><div><h3>${x[0]}</h3><p>${x[1]}</p></div></article>`).join('')}</div><aside class="cl-key-fact"><b><i class="fa-solid fa-lightbulb"></i> KEY TAKEAWAY</b><p>${t.fact}</p></aside><a class="cl-source-link" href="${t.source}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Explore the official science resource</a>`;document.getElementById('cl-question-grid').classList.add('hidden');document.getElementById('cl-topic-view').classList.remove('hidden');document.getElementById('ce-top-title').textContent=t.title;document.getElementById('ce-learning').scrollTop=0;}
-function backToLearningQuestions(){document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.getElementById('ce-learning').scrollTop=0;}
-function openExplorerDashboard(){closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey mission control. This is an educational three dimensional space explorer, not a live spacecraft telemetry dashboard. Explore eight planets, five featured moons, four spacecraft models, and dedicated Milky Way and black hole environments. Select a destination to inspect its 3D model, read science facts, and listen to narration. Use the official NASA links for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
+
+
+/* ==========================================================================
+   LIVE ISS TRACKER
+   ========================================================================== */
+let issTrackerTimer = null;
+let issTrackerAbort = null;
+
+function stopISSTracker(){
+  if(issTrackerTimer){ clearInterval(issTrackerTimer); issTrackerTimer = null; }
+  if(issTrackerAbort){ try{ issTrackerAbort.abort(); }catch(e){} issTrackerAbort = null; }
+}
+
+function formatISSCoord(value, pos, neg){
+  const n = Number(value);
+  if(!Number.isFinite(n)) return '—';
+  const abs = Math.abs(n).toFixed(2);
+  return `${abs}° ${n >= 0 ? pos : neg}`;
+}
+
+function updateISSMapMarker(lat, lon){
+  const marker = document.getElementById('iss-map-marker');
+  const map = document.getElementById('iss-live-map');
+  if(!marker || !map) return;
+  // Equirectangular projection: x from longitude, y from latitude
+  const x = ((Number(lon) + 180) / 360) * 100;
+  const y = ((90 - Number(lat)) / 180) * 100;
+  marker.style.left = Math.max(0, Math.min(100, x)) + '%';
+  marker.style.top = Math.max(0, Math.min(100, y)) + '%';
+  marker.classList.add('iss-marker-pulse');
+  marker.title = `ISS · ${formatISSCoord(lat,'N','S')}, ${formatISSCoord(lon,'E','W')}`;
+  const coords = document.getElementById('iss-map-coords');
+  if(coords) coords.textContent = `${formatISSCoord(lat,'N','S')} · ${formatISSCoord(lon,'E','W')}`;
+}
+
+async function fetchISSPosition(){
+  const statusEl = document.getElementById('iss-live-status');
+  const body = document.getElementById('iss-live-metrics');
+  if(!body) return;
+  if(statusEl) statusEl.textContent = 'Updating…';
+  try{
+    if(issTrackerAbort) try{ issTrackerAbort.abort(); }catch(e){}
+    issTrackerAbort = new AbortController();
+    const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544', {
+      signal: issTrackerAbort.signal,
+      cache: 'no-store'
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const lat = data.latitude;
+    const lon = data.longitude;
+    const alt = data.altitude; // km
+    const vel = data.velocity; // km/h
+    const vis = data.visibility;
+    const ts = data.timestamp ? new Date(data.timestamp * 1000) : new Date();
+    const timeStr = ts.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    body.innerHTML = `
+      <article><small>Latitude</small><b>${formatISSCoord(lat,'N','S')}</b></article>
+      <article><small>Longitude</small><b>${formatISSCoord(lon,'E','W')}</b></article>
+      <article><small>Altitude</small><b>${Number(alt).toFixed(1)} km</b></article>
+      <article><small>Speed</small><b>${Number(vel).toFixed(0)} km/h</b></article>
+      <article><small>Visibility</small><b>${vis === 'daylight' ? 'Daylight' : vis === 'eclipsed' ? 'Earth shadow' : (vis || '—')}</b></article>
+      <article><small>Updated</small><b>${timeStr}</b></article>`;
+    updateISSMapMarker(lat, lon);
+    if(statusEl){
+      statusEl.innerHTML = '<span class="iss-live-dot"></span> LIVE';
+      statusEl.classList.add('iss-status-live');
+    }
+  }catch(err){
+    if(err.name === 'AbortError') return;
+    if(statusEl){
+      statusEl.textContent = 'Offline · retrying';
+      statusEl.classList.remove('iss-status-live');
+    }
+    // Fallback: open-notify (lat/lon only)
+    try{
+      const res2 = await fetch('https://api.open-notify.org/iss-now.json', { cache: 'no-store' });
+      if(!res2.ok) throw new Error('fallback failed');
+      const d2 = await res2.json();
+      const lat = d2.iss_position?.latitude;
+      const lon = d2.iss_position?.longitude;
+      body.innerHTML = `
+        <article><small>Latitude</small><b>${formatISSCoord(lat,'N','S')}</b></article>
+        <article><small>Longitude</small><b>${formatISSCoord(lon,'E','W')}</b></article>
+        <article><small>Altitude</small><b>~420 km</b></article>
+        <article><small>Speed</small><b>~27,600 km/h</b></article>
+        <article><small>Source</small><b>Open Notify</b></article>
+        <article><small>Updated</small><b>${new Date().toLocaleTimeString()}</b></article>`;
+      updateISSMapMarker(lat, lon);
+      if(statusEl){ statusEl.innerHTML = '<span class="iss-live-dot"></span> LIVE'; statusEl.classList.add('iss-status-live'); }
+    }catch(e2){
+      if(statusEl) statusEl.textContent = 'Unable to reach tracker';
+    }
+  }
+}
+
+function startISSTracker(){
+  stopISSTracker();
+  fetchISSPosition();
+  issTrackerTimer = setInterval(fetchISSPosition, 8000);
+}
+
+
+function openISSExplorer(){
+  closeMissionModal();
+  stopExplorerVoice();
+  installExplorerUI();
+  document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+  explorerCurrentKey='iss';
+  document.getElementById('ce-dashboard')?.classList.add('hidden');
+  document.getElementById('ce-blackhole')?.classList.add('hidden');
+  document.getElementById('ce-creator')?.classList.add('hidden');
+  document.getElementById('ce-learning')?.classList.add('hidden');
+  document.getElementById('ce-detail')?.classList.remove('hidden');
+  document.getElementById('ce-top-title').textContent='International Space Station';
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-iss-nav')?.classList.add('active');
+  if(window.innerWidth<760) toggleExplorerNav(false);
+  renderExplorerCraft('iss');
+  document.documentElement.style.setProperty('--ce-info-width','360px');
+  startISSTracker();
+}
+
+
+/* ==========================================================================
+   LEARNING HUB QUIZ — unique questions across rounds
+   ========================================================================== */
+const QUIZ_BANK = [
+  {id:'q1', cat:'Atmosphere', q:'Why does the daytime sky look blue?', options:['The ocean reflects blue upward','Air molecules scatter blue light more strongly','The Sun only emits blue light','Clouds filter out red light'], answer:1, explain:'Shorter blue wavelengths are scattered more by air molecules (Rayleigh scattering).'},
+  {id:'q2', cat:'Atmosphere', q:'Why are sunsets often red or orange?', options:['Dust always turns the sky red','Sunlight travels a longer path and blue is scattered away','The Moon blocks blue light','Oceans heat the horizon'], answer:1, explain:'At sunset, sunlight crosses more atmosphere, so much blue light is scattered out of the direct beam.'},
+  {id:'q3', cat:'Aurora', q:'What mainly causes an aurora?', options:['Lightning in polar clouds','Charged particles from the Sun interacting with the atmosphere','Volcanoes near the poles','City lights reflecting off ice'], answer:1, explain:'Solar wind particles guided by Earth’s magnetic field excite atmospheric gases, which then glow.'},
+  {id:'q4', cat:'Aurora', q:'Auroras are most common near which regions?', options:['The equator','Deserts','Polar regions','Only over oceans'], answer:2, explain:'Earth’s magnetic field guides charged particles toward the polar regions.'},
+  {id:'q5', cat:'Asteroids', q:'Where are most known asteroids found?', options:['Inside the Sun','Between Mars and Jupiter','Only beyond Neptune','On Earth’s surface'], answer:1, explain:'The main asteroid belt lies between the orbits of Mars and Jupiter.'},
+  {id:'q6', cat:'Asteroids', q:'How do asteroids generally differ from comets?', options:['Asteroids are mostly rocky/metallic; comets have more ice','Comets are always larger','Asteroids only exist near Earth','Comets never orbit the Sun'], answer:0, explain:'Asteroids are typically rocky or metallic; comets contain substantial ice and can grow tails near the Sun.'},
+  {id:'q7', cat:'Earth', q:'About how much of Earth’s surface is covered by water?', options:['About 29%','About 50%','About 71%','About 95%'], answer:2, explain:'Water covers roughly 71% of Earth’s surface; land about 29%.'},
+  {id:'q8', cat:'Earth', q:'How many continents are commonly listed in the seven-continent model?', options:['Five','Six','Seven','Eight'], answer:2, explain:'Asia, Africa, North America, South America, Antarctica, Europe, and Australia/Oceania.'},
+  {id:'q9', cat:'Earth', q:'Which is the largest ocean?', options:['Atlantic','Indian','Arctic','Pacific'], answer:3, explain:'The Pacific Ocean is the largest of the five commonly named oceans.'},
+  {id:'q10', cat:'Seasons', q:'What is the main reason Earth has seasons?', options:['Earth is closer to the Sun in summer','Earth’s axis is tilted','The Moon blocks sunlight','Ocean currents reverse each year'], answer:1, explain:'Earth’s axis is tilted about 23.4°, so hemispheres receive different sunlight through the year.'},
+  {id:'q11', cat:'Seasons', q:'When the Northern Hemisphere has summer, the Southern Hemisphere generally has…', options:['Also summer','Winter','No seasons','Only rain'], answer:1, explain:'The hemispheres experience opposite seasons because of the axial tilt.'},
+  {id:'q12', cat:'Moon', q:'Why does the Moon appear to change shape?', options:['It expands and shrinks','We see different portions of its sunlit half','Earth’s shadow always covers it','Clouds hide parts of it'], answer:1, explain:'Lunar phases are views of the Moon’s sunlit side from Earth as the Moon orbits.'},
+  {id:'q13', cat:'Moon', q:'A normal monthly phase change is mainly caused by…', options:['Earth’s shadow','Changing viewing angle of the sunlit Moon','Solar flares','Asteroid impacts'], answer:1, explain:'Earth’s shadow causes lunar eclipses, not the regular monthly phases.'},
+  {id:'q14', cat:'ISS', q:'Roughly how high does the ISS orbit above Earth?', options:['About 40 km','About 400 km','About 4,000 km','About 40,000 km'], answer:1, explain:'The International Space Station orbits at roughly 400 km altitude.'},
+  {id:'q15', cat:'ISS', q:'About how long does the ISS take to orbit Earth once?', options:['About 10 minutes','About 90 minutes','About 24 hours','About 7 days'], answer:1, explain:'One ISS orbit takes roughly 92–93 minutes.'},
+  {id:'q16', cat:'Solar System', q:'Which planet is known for its prominent rings?', options:['Mars','Venus','Saturn','Mercury'], answer:2, explain:'Saturn is famous for its bright, extensive ring system.'},
+  {id:'q17', cat:'Solar System', q:'What is at the center of our Solar System?', options:['Jupiter','Earth','The Moon','The Sun'], answer:3, explain:'The Sun is the central star of the Solar System.'},
+  {id:'q18', cat:'Solar System', q:'Which is the largest planet in our Solar System?', options:['Earth','Saturn','Jupiter','Neptune'], answer:2, explain:'Jupiter is the largest planet by mass and diameter.'},
+  {id:'q19', cat:'Space weather', q:'The continuous flow of charged particles from the Sun is called…', options:['Solar wind','Aurora rain','Cosmic fog','Lunar breeze'], answer:0, explain:'The solar wind is a stream of charged particles released from the Sun’s atmosphere.'},
+  {id:'q20', cat:'Astronomy', q:'A black hole’s event horizon is best described as…', options:['A solid rocky surface','A boundary beyond which light cannot escape','A cloud of blue gas','The center of every galaxy only'], answer:1, explain:'Beyond the event horizon, escape speed exceeds the speed of light.'},
+  {id:'q21', cat:'Astronomy', q:'Voyager 1 is notable for…', options:['Landing on Mars','Entering interstellar space','Being the first human on the Moon','Orbiting only Venus'], answer:1, explain:'Voyager 1 left the heliosphere and entered interstellar space.'},
+  {id:'q22', cat:'Moon', q:'About how long is a full cycle of Moon phases?', options:['About 7 days','About 14 days','About 29.5 days','About 365 days'], answer:2, explain:'The synodic month (phase cycle) is about 29.5 days.'},
+  {id:'q23', cat:'Earth', q:'Which ocean surrounds Antarctica?', options:['Arctic Ocean','Southern Ocean','Caspian Sea','Red Sea'], answer:1, explain:'The Southern Ocean surrounds Antarctica.'},
+  {id:'q24', cat:'Seasons', q:'Around an equinox…', options:['One pole faces the Sun fully','Day and night are about equal worldwide','Earth stops tilting','Only the equator has daylight'], answer:1, explain:'Near equinoxes, neither hemisphere is strongly tilted toward the Sun.'}
+];
+
+const QUIZ_ROUND_SIZE = 5;
+let quizState = {
+  remaining: [],
+  currentRound: [],
+  index: 0,
+  score: 0,
+  roundNumber: 0,
+  answered: false
+};
+
+function shuffleInPlace(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function ensureQuizPool(){
+  if(!quizState.remaining.length){
+    quizState.remaining = shuffleInPlace(QUIZ_BANK.map(q=>({...q})));
+  }
+}
+
+
+function toggleExplorerLearning(force){
+  const list=document.getElementById('ce-learning-sub');
+  const btn=document.getElementById('ce-learning-toggle');
+  if(!list||!btn)return;
+  const open=typeof force==='boolean'?force:list.classList.contains('ce-learning-sub-collapsed');
+  list.classList.toggle('ce-learning-sub-collapsed',!open);
+  btn.setAttribute('aria-expanded',open?'true':'false');
+  btn.classList.toggle('is-open',open);
+}
+
+function openLearningQuizFromNav(){
+  closeMissionModal();
+  stopExplorerVoice();
+  stopISSTracker();
+  installExplorerUI();
+  document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+  ['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+  document.getElementById('ce-learning')?.classList.remove('hidden');
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-quiz-nav')?.classList.add('active');
+  document.querySelector('.ce-learning-toggle')?.classList.add('active');
+  toggleExplorerLearning(true);
+  if(window.innerWidth<760) toggleExplorerNav(false);
+  if(explorerRAF)cancelAnimationFrame(explorerRAF);
+  if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}
+  if(explorerControls){explorerControls.dispose();explorerControls=null;}
+  openLearningQuiz();
+}
+
+function openLearningQuiz(){
+  stopExplorerVoice();
+  document.getElementById('cl-question-grid')?.classList.add('hidden');
+  document.getElementById('cl-topic-view')?.classList.add('hidden');
+  document.getElementById('cl-quiz-view')?.classList.remove('hidden');
+  document.getElementById('ce-top-title').textContent='Space Quiz';
+  document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.ce-quiz-nav')?.classList.add('active');
+  document.querySelector('.ce-learning-toggle')?.classList.add('active');
+  toggleExplorerLearning(true);
+  // Fresh session pool when opening quiz from hub
+  if(!quizState.remaining.length && quizState.roundNumber===0){
+    quizState.remaining = shuffleInPlace(QUIZ_BANK.map(q=>({...q})));
+  }
+  startQuizRound();
+  document.getElementById('ce-learning').scrollTop=0;
+}
+
+function startQuizRound(){
+  ensureQuizPool();
+  const take = Math.min(QUIZ_ROUND_SIZE, quizState.remaining.length);
+  if(take===0){
+    // Entire bank used — reshuffle for a brand-new cycle (still no immediate repeats mid-cycle)
+    quizState.remaining = shuffleInPlace(QUIZ_BANK.map(q=>({...q})));
+  }
+  const n = Math.min(QUIZ_ROUND_SIZE, quizState.remaining.length);
+  quizState.currentRound = quizState.remaining.splice(0, n);
+  quizState.index = 0;
+  quizState.score = 0;
+  quizState.roundNumber += 1;
+  quizState.answered = false;
+  document.getElementById('cl-quiz-results')?.classList.add('hidden');
+  document.getElementById('cl-quiz-play')?.classList.remove('hidden');
+  document.getElementById('cl-quiz-round').textContent = 'Round ' + quizState.roundNumber;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  const item = quizState.currentRound[quizState.index];
+  if(!item){ showQuizResults(); return; }
+  quizState.answered = false;
+  document.getElementById('cl-quiz-category').textContent = item.cat;
+  document.getElementById('cl-quiz-question').textContent = item.q;
+  document.getElementById('cl-quiz-progress').textContent = `Question ${quizState.index+1} / ${quizState.currentRound.length}`;
+  document.getElementById('cl-quiz-score').textContent = `Score ${quizState.score}`;
+  const feedback = document.getElementById('cl-quiz-feedback');
+  feedback.classList.add('hidden');
+  feedback.textContent = '';
+  document.getElementById('cl-quiz-next')?.classList.add('hidden');
+  const opts = document.getElementById('cl-quiz-options');
+  opts.innerHTML = item.options.map((text,i)=>`<button type="button" class="cl-quiz-option" data-index="${i}" onclick="answerQuizOption(${i})">${text}</button>`).join('');
+}
+
+function answerQuizOption(choice){
+  if(quizState.answered) return;
+  const item = quizState.currentRound[quizState.index];
+  if(!item) return;
+  quizState.answered = true;
+  const correct = choice === item.answer;
+  if(correct) quizState.score += 1;
+  document.getElementById('cl-quiz-score').textContent = `Score ${quizState.score}`;
+  const buttons = [...document.querySelectorAll('.cl-quiz-option')];
+  buttons.forEach((btn,i)=>{
+    btn.disabled = true;
+    if(i===item.answer) btn.classList.add('is-correct');
+    if(i===choice && !correct) btn.classList.add('is-wrong');
+  });
+  const feedback = document.getElementById('cl-quiz-feedback');
+  feedback.classList.remove('hidden');
+  feedback.className = 'cl-quiz-feedback ' + (correct?'is-correct':'is-wrong');
+  feedback.innerHTML = (correct?'<b>Correct.</b> ':'<b>Not quite.</b> ') + (item.explain||'');
+  document.getElementById('cl-quiz-next')?.classList.remove('hidden');
+  if(quizState.index >= quizState.currentRound.length-1){
+    const nextBtn = document.getElementById('cl-quiz-next');
+    if(nextBtn) nextBtn.innerHTML = 'See results <i class="fa-solid fa-flag-checkered"></i>';
+  }else{
+    const nextBtn = document.getElementById('cl-quiz-next');
+    if(nextBtn) nextBtn.innerHTML = 'Next question <i class="fa-solid fa-arrow-right"></i>';
+  }
+}
+
+function nextQuizQuestion(){
+  if(!quizState.answered) return;
+  quizState.index += 1;
+  if(quizState.index >= quizState.currentRound.length) showQuizResults();
+  else renderQuizQuestion();
+}
+
+function showQuizResults(){
+  document.getElementById('cl-quiz-play')?.classList.add('hidden');
+  document.getElementById('cl-quiz-results')?.classList.remove('hidden');
+  const total = quizState.currentRound.length;
+  const score = quizState.score;
+  document.getElementById('cl-quiz-results-score').textContent = `You scored ${score} / ${total}`;
+  const pct = total? score/total : 0;
+  let title = 'Keep exploring!';
+  if(pct===1) title = 'Perfect round!';
+  else if(pct>=0.8) title = 'Excellent work!';
+  else if(pct>=0.6) title = 'Nice job!';
+  document.getElementById('cl-quiz-results-title').textContent = title;
+  const left = quizState.remaining.length;
+  const note = left>0
+    ? `${left} unique question${left===1?'':'s'} still unused. Next round will not repeat any question you have already seen in this session.`
+    : 'You have seen every question in the bank. Next round will reshuffle a fresh unique set.';
+  document.getElementById('cl-quiz-results-note').textContent = note;
+  document.getElementById('cl-quiz-score').textContent = `Score ${score}`;
+}
+
+
+function openLearningHub(){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');['ce-dashboard','ce-detail','ce-blackhole','ce-creator'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));document.getElementById('ce-learning')?.classList.remove('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-quiz-view')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector('.ce-learning-toggle')?.classList.add('active');toggleExplorerLearning(true);document.querySelector('.ce-learning-nav')?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
+function openLearningTopic(key){const t=LEARNING_TOPICS[key];if(!t)return;const earthMap=key==='earth'?`<div class="cl-world-map"><div class="cl-map-label">WORLD MAP · SCHEMATIC</div><div class="cl-map-shapes" aria-hidden="true"><span class="cl-continent c-na"></span><span class="cl-continent c-sa"></span><span class="cl-continent c-eu"></span><span class="cl-continent c-af"></span><span class="cl-continent c-as"></span><span class="cl-continent c-au"></span><span class="cl-continent c-an"></span></div><div class="cl-map-legend"><span>LAND · 7 CONTINENTS</span><span>OCEAN · 5 NAMES</span></div></div><div class="cl-name-grid"><div><b>CONTINENTS</b><ol><li>Asia</li><li>Africa</li><li>North America</li><li>South America</li><li>Antarctica</li><li>Europe</li><li>Australia / Oceania</li></ol></div><div><b>OCEANS</b><ol><li>Pacific</li><li>Atlantic</li><li>Indian</li><li>Southern</li><li>Arctic</li></ol></div></div>`:'';document.getElementById('cl-topic-content').innerHTML=`<span class="ce-pill">${t.eyebrow}</span><h1>${t.title}</h1><p class="cl-topic-intro">${t.intro}</p>${earthMap}<div class="cl-topic-sections">${t.sections.map((x,i)=>`<article><span>0${i+1}</span><div><h3>${x[0]}</h3><p>${x[1]}</p></div></article>`).join('')}</div><aside class="cl-key-fact"><b><i class="fa-solid fa-lightbulb"></i> KEY TAKEAWAY</b><p>${t.fact}</p></aside>`;const resBtn=document.getElementById('cl-topic-resource');const resLabel=document.getElementById('cl-topic-resource-label');if(resBtn){resBtn.href=t.source||'#';resBtn.style.display=t.source?'inline-flex':'none';}if(resLabel){const isNasa=/nasa\.gov/i.test(t.source||'');const isNoaa=/noaa\.gov/i.test(t.source||'');resLabel.textContent=isNasa?'NASA resource':isNoaa?'NOAA resource':'Official science resource';}stopExplorerVoice();const sectionsText=(t.sections||[]).map((x,i)=>`Section ${i+1}. ${x[0]}. ${x[1]}`).join(' ');const narrationText=`${t.title}. ${t.intro||''} ${sectionsText} Key takeaway. ${t.fact||''}`.replace(/\s+/g,' ').trim();const listenBtn=document.getElementById('cl-topic-listen');if(listenBtn)listenBtn.dataset.narration=narrationText;document.getElementById('cl-question-grid').classList.add('hidden');document.getElementById('cl-topic-view').classList.remove('hidden');document.getElementById('ce-top-title').textContent=t.title;document.getElementById('ce-learning').scrollTop=0;}
+function backToLearningQuestions(){stopExplorerVoice();document.getElementById('cl-topic-view')?.classList.add('hidden');document.getElementById('cl-quiz-view')?.classList.add('hidden');document.getElementById('cl-question-grid')?.classList.remove('hidden');document.getElementById('ce-top-title').textContent='Learning Hub';document.getElementById('ce-learning').scrollTop=0;}
+function openExplorerDashboard(){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');explorerCurrentKey='Dashboard';document.getElementById('ce-dashboard').classList.remove('hidden');document.getElementById('ce-detail').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-top-title').textContent='Dashboard';const dashboardListen=document.getElementById('ce-dashboard-listen');if(dashboardListen)dashboardListen.dataset.narration='Welcome to Cosmic Odyssey mission control. This is an educational three dimensional space explorer, not a live spacecraft telemetry dashboard. Explore eight planets, five featured moons, four spacecraft models, and dedicated Milky Way and black hole environments. Select a destination to inspect its 3D model, read science facts, and listen to narration. Use the official NASA links for further learning.';document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));if(window.innerWidth<760)toggleExplorerNav(false);if(explorerRAF)cancelAnimationFrame(explorerRAF);if(explorerRenderer){explorerRenderer.dispose();explorerRenderer=null;}if(explorerControls){explorerControls.dispose();explorerControls=null;}}
 function openCreatorPortfolio(){
  closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
  explorerCurrentKey='Creator';
@@ -1548,7 +1890,7 @@ function openCreatorPortfolio(){
  if(explorerControls){explorerControls.dispose();explorerControls=null;}
 }
 function scrollCreatorTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
-function openExplorerObject(key,type){closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
+function openExplorerObject(key,type){closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');if(type==='moon'){const parent=EXPLORER_OBJECTS[key]?.parent;const group=[...document.querySelectorAll('.ce-planet-group')].find(g=>g.querySelector('.ce-planet-parent')?.dataset.key===parent);group?.querySelector('.ce-submoon-list')?.classList.add('expanded');}explorerCurrentKey=key;document.getElementById('ce-dashboard').classList.add('hidden');document.getElementById('ce-blackhole')?.classList.add('hidden');document.getElementById('ce-creator')?.classList.add('hidden');document.getElementById('ce-learning')?.classList.add('hidden');document.getElementById('ce-detail').classList.remove('hidden');document.getElementById('ce-top-title').textContent=type==='craft'?(EXPLORER_CRAFT[key]?.title||key):key;document.querySelectorAll('.ce-nav-item.active').forEach(x=>x.classList.remove('active'));document.querySelector(`.ce-nav-item[data-key="${CSS.escape(key)}"]`)?.classList.add('active');if(window.innerWidth<760)toggleExplorerNav(false);if(type==='craft')renderExplorerCraft(key);else renderExplorerCelestial(key,type);}
 let bhScene=null,bhCamera=null,bhRenderer=null,bhRAF=0,bhObject=null,bhObjectKind=null,bhDisk=null,bhParticles=null,bhRunning=false,bhProgress=0,bhLast=0,bhHasChosenObject=false;
 const BH_OBJECTS={
  satellite:{name:'Satellite',color:0x6be7ff,size:.20,title:'A satellite near a black hole',summary:'A satellite is not automatically swallowed. Its fate depends on its approach speed, direction, and the black hole’s mass.',detail:'<h3>Satellite encounter</h3><p><strong>Gravity bends the path:</strong> A passing satellite can be deflected into a new trajectory. It may fly past, become gravitationally bound, or plunge inward.</p><p><strong>Orbit is not guaranteed:</strong> A stable orbit requires the right energy and angular momentum. The animation exaggerates the pull for clarity and is not a trajectory prediction.</p><p><strong>Inside the event horizon:</strong> Escape is no longer possible. The horizon is a boundary in spacetime, not a physical shell.</p>'},
@@ -1558,7 +1900,7 @@ const BH_OBJECTS={
 };
 function toggleBlackHoleSidebar(){if(bhRenderer&&bhCamera){const mount=document.getElementById('bh-canvas');if(mount){bhCamera.aspect=mount.clientWidth/Math.max(1,mount.clientHeight);bhCamera.updateProjectionMatrix();bhRenderer.setSize(mount.clientWidth,mount.clientHeight);}}}
 function openBlackHoleExplorer(){
- closeMissionModal();stopExplorerVoice();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
+ closeMissionModal();stopExplorerVoice();stopISSTracker();installExplorerUI();document.getElementById('cosmic-explorer')?.classList.remove('ce-galaxy-mode','ce-mission-mode');
  explorerCurrentKey='Black Hole';
  document.getElementById('ce-dashboard').classList.add('hidden');
  document.getElementById('ce-detail').classList.add('hidden');
@@ -1708,12 +2050,44 @@ if(key==='Saturn'){const ring=new THREE.Mesh(new THREE.RingGeometry(radius*1.35,
   atmosphere.name='earth-atmosphere-glow'; explorerModel.add(atmosphere);
   const nightGlow=new THREE.PointLight(0x168bff,.45,8); nightGlow.position.set(-1.8,.2,-1.8); explorerModel.add(nightGlow);
 }explorerScene.add(explorerModel);if(!moon&&EXPLORER_MOONS[key]){EXPLORER_MOONS[key].slice(0,4).forEach((m,i)=>{const md=EXPLORER_OBJECTS[m];const mg=new THREE.Mesh(new THREE.SphereGeometry(.13+(i%2)*.035,20,16),new THREE.MeshStandardMaterial({color:md?.color||0xb7b7b7,roughness:1}));const a=i*Math.PI/2;mg.position.set(Math.cos(a)*radius*2.4,Math.sin(a*.7)*.25,Math.sin(a)*radius*2.4);explorerModel.add(mg);});}const narratorText=`${title}. ${subtitle}. ${moon?moon.fact:(data.desc||'')}. ${metrics.map(x=>x[0]+': '+x[1]).join('. ')}.`;document.getElementById('ce-listen').dataset.narration=narratorText;}
-function renderExplorerCraft(key){const craft=EXPLORER_CRAFT[key]||EXPLORER_CRAFT.hohmann;document.getElementById('ce-category').textContent='MISSION SPACECRAFT';document.getElementById('ce-title').textContent=craft.title;document.getElementById('ce-subtitle').textContent=craft.subtitle;document.getElementById('ce-info-body').innerHTML=`<p class="ce-description">${craft.fact}</p><div class="ce-metric-grid">${craft.details.map(x=>`<article><small>${x[0]}</small><b>${x[1]}</b></article>`).join('')}</div><div class="ce-fact-block"><h3><i class="fa-solid fa-circle-info"></i> About this model</h3><p class="ce-description">This is an educational 3D representation. The model is illustrative and not a scale-accurate engineering design.</p></div><p class="ce-accuracy-note">NASA mission reference: verify mission dates and status at the official NASA mission page.</p>`;document.getElementById('ce-source-link').href=key==='new_horizons'?'https://science.nasa.gov/mission/new-horizons/':key==='voyager'?'https://science.nasa.gov/mission/voyager/':'https://science.nasa.gov/solar-system/';document.getElementById('ce-listen').dataset.narration=`${craft.title}. ${craft.subtitle}. ${craft.fact} ${craft.details.map(x=>x[0]+': '+x[1]).join('. ')}.`;explorerStartRenderer();explorerModel=new THREE.Group();const c=craft.color;
+function renderExplorerCraft(key){const craft=EXPLORER_CRAFT[key]||EXPLORER_CRAFT.hohmann;document.getElementById('ce-category').textContent=key==='iss'?'SPACE STATION':'MISSION SPACECRAFT';document.getElementById('ce-title').textContent=craft.title;document.getElementById('ce-subtitle').textContent=craft.subtitle;
+const livePanel=key==='iss'?`<div class="iss-live-panel"><div class="iss-live-head"><span class="ce-pill">LIVE TRACKER</span><span id="iss-live-status" class="iss-live-status">Connecting…</span></div><div id="iss-live-map" class="iss-live-map" aria-label="ISS position on world map"><img class="iss-map-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Earthmap1000x500.jpg/800px-Earthmap1000x500.jpg" alt="World map" loading="lazy" decoding="async" onerror="this.style.display='none';this.parentElement.classList.add('iss-map-fallback')"/><div class="iss-map-continents" aria-hidden="true"><span class="iss-c iss-c-na"></span><span class="iss-c iss-c-sa"></span><span class="iss-c iss-c-eu"></span><span class="iss-c iss-c-af"></span><span class="iss-c iss-c-as"></span><span class="iss-c iss-c-au"></span><span class="iss-c iss-c-an"></span></div><div class="iss-map-ocean-tint"></div><div id="iss-map-marker" class="iss-map-marker" title="International Space Station"><span class="iss-marker-ring"></span><span class="iss-marker-core"></span></div><div class="iss-map-footer"><span class="iss-map-label">Land · oceans · ISS</span><span id="iss-map-coords" class="iss-map-coords">—</span></div></div><div id="iss-live-metrics" class="ce-metric-grid iss-live-metrics"><article><small>Latitude</small><b>—</b></article><article><small>Longitude</small><b>—</b></article><article><small>Altitude</small><b>—</b></article><article><small>Speed</small><b>—</b></article></div><p class="iss-live-note">Yellow point = current ISS location on an equirectangular world map. Updates ~every 8s.</p></div>`:'';
+document.getElementById('ce-info-body').innerHTML=`${livePanel}<p class="ce-description">${craft.fact}</p><div class="ce-metric-grid">${craft.details.map(x=>`<article><small>${x[0]}</small><b>${x[1]}</b></article>`).join('')}</div><div class="ce-fact-block"><h3><i class="fa-solid fa-circle-info"></i> About this model</h3><p class="ce-description">This is an educational 3D representation. The model is illustrative and not a scale-accurate engineering design.</p></div><p class="ce-accuracy-note">NASA mission reference: verify mission dates and status at the official NASA mission page.</p>`;document.getElementById('ce-source-link').href=key==='iss'?'https://www.nasa.gov/international-space-station/':key==='new_horizons'?'https://science.nasa.gov/mission/new-horizons/':key==='voyager'?'https://science.nasa.gov/mission/voyager/':'https://science.nasa.gov/solar-system/';document.getElementById('ce-listen').dataset.narration=`${craft.title}. ${craft.subtitle}. ${craft.fact} ${craft.details.map(x=>x[0]+': '+x[1]).join('. ')}.`;explorerStartRenderer();explorerModel=new THREE.Group();const c=craft.color;
  const metal=new THREE.MeshStandardMaterial({color:0xd9e2ec,metalness:.65,roughness:.3});
  const gold=new THREE.MeshStandardMaterial({color:0xd9a441,metalness:.55,roughness:.35});
  const solar=new THREE.MeshStandardMaterial({color:0x244e8a,metalness:.35,roughness:.4,emissive:0x10264a});
  const accent=new THREE.MeshStandardMaterial({color:c,metalness:.45,roughness:.3,emissive:c,emissiveIntensity:.12});
- if(key==='voyager'){
+
+ if(key==='iss'){
+   // Educational stylized ISS: central truss, modules, and large solar arrays
+   const white=new THREE.MeshStandardMaterial({color:0xe8eef5,metalness:.4,roughness:.35});
+   const dark=new THREE.MeshStandardMaterial({color:0x3a4555,metalness:.5,roughness:.4});
+   const solarMat=new THREE.MeshStandardMaterial({color:0x1a3a6e,metalness:.3,roughness:.45,emissive:0x0a1a3a,emissiveIntensity:.15});
+   const gold=new THREE.MeshStandardMaterial({color:0xc9a227,metalness:.6,roughness:.3});
+   // Main truss (long horizontal beam)
+   const truss=new THREE.Mesh(new THREE.BoxGeometry(4.2,.12,.12),dark);explorerModel.add(truss);
+   // Central modules (Destiny / Unity / Zarya style cluster)
+   const core=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,.9,16),white);core.rotation.z=Math.PI/2;explorerModel.add(core);
+   const node=new THREE.Mesh(new THREE.SphereGeometry(.32,16,12),white);node.position.x=.55;explorerModel.add(node);
+   const lab=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.7,14),white);lab.rotation.z=Math.PI/2;lab.position.x=-.65;explorerModel.add(lab);
+   // Cupola-like dome
+   const cupola=new THREE.Mesh(new THREE.SphereGeometry(.18,12,8,0,Math.PI*2,0,Math.PI/2),gold);cupola.position.set(.2,-.35,0);cupola.rotation.x=Math.PI;explorerModel.add(cupola);
+   // Radiators
+   [-1,1].forEach(s=>{const rad=new THREE.Mesh(new THREE.BoxGeometry(.9,.02,.35),new THREE.MeshStandardMaterial({color:0xd0d8e0,metalness:.2,roughness:.6}));rad.position.set(s*1.1,.25,0);explorerModel.add(rad);});
+   // Large solar arrays on each side of truss
+   [-1,1].forEach(side=>{
+     const boom=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,1.1),dark);boom.position.set(side*1.9,0,0);explorerModel.add(boom);
+     [-1,1].forEach(y=>{
+       const array=new THREE.Mesh(new THREE.BoxGeometry(.02,1.35,2.4),solarMat);array.position.set(side*1.9,y*.75,0);explorerModel.add(array);
+       // grid lines suggestion
+       const frame=new THREE.Mesh(new THREE.BoxGeometry(.03,1.38,2.45),new THREE.MeshStandardMaterial({color:0x8899aa,metalness:.3,roughness:.5,transparent:true,opacity:.35}));frame.position.copy(array.position);explorerModel.add(frame);
+     });
+   });
+   // Small docking ports
+   [1.1,-1.15].forEach(x=>{const port=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.15,10),dark);port.rotation.z=Math.PI/2;port.position.x=x;explorerModel.add(port);});
+   explorerModel.scale.set(1.15,1.15,1.15);
+ } else if(key==='voyager'){
+
    const bus=new THREE.Mesh(new THREE.BoxGeometry(.42,.5,.42),metal);explorerModel.add(bus);
    const dish=new THREE.Mesh(new THREE.SphereGeometry(.48,28,14,0,Math.PI*2,0,Math.PI/2),new THREE.MeshStandardMaterial({color:0xf1f5f9,metalness:.45,roughness:.25,side:THREE.DoubleSide}));dish.position.set(-.15,.4,0);dish.rotation.z=-Math.PI/2;explorerModel.add(dish);
    [-1,1].forEach(side=>{const panel=new THREE.Mesh(new THREE.BoxGeometry(.72,.04,.38),solar);panel.position.set(.15,side*.58,0);explorerModel.add(panel);});
@@ -1810,9 +2184,37 @@ function stopExplorerVoice(){
  updateExplorerVoiceButtons('idle');
 }
 function updateExplorerVoiceButtons(state){
- const listenButtons=[document.getElementById('ce-listen'),document.getElementById('ce-dashboard-listen')].filter(Boolean);
- const pauseButtons=[document.getElementById('ce-voice-pause'),document.getElementById('ce-dashboard-voice-pause')].filter(Boolean);
- listenButtons.forEach(listen=>{listen.innerHTML=state==='playing'?'<i class="fa-solid fa-volume-high"></i><span>Playing</span>':state==='paused'?'<i class="fa-solid fa-volume-high"></i><span>Paused</span>':(listen.id==='ce-dashboard-listen'?'<i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span>':'<i class="fa-solid fa-volume-high"></i><span>Listen</span>');});
+ const listenButtons=[document.getElementById('ce-listen'),document.getElementById('ce-dashboard-listen'),document.getElementById('cl-topic-listen')].filter(Boolean);
+ const pauseButtons=[document.getElementById('ce-voice-pause'),document.getElementById('ce-dashboard-voice-pause'),document.getElementById('cl-topic-voice-pause')].filter(Boolean);
+ listenButtons.forEach(listen=>{
+   if(state==='playing') listen.innerHTML='<i class="fa-solid fa-volume-high"></i><span>Playing</span>';
+   else if(state==='paused') listen.innerHTML='<i class="fa-solid fa-volume-high"></i><span>Paused</span>';
+   else if(listen.id==='ce-dashboard-listen') listen.innerHTML='<i class="fa-solid fa-volume-high"></i><span>Listen to Dashboard</span>';
+   else listen.innerHTML='<i class="fa-solid fa-volume-high"></i><span>Listen</span>';
+ });
  pauseButtons.forEach(pause=>{pause.innerHTML=state==='paused'?'<i class="fa-solid fa-play"></i><span>Resume</span>':'<i class="fa-solid fa-pause"></i><span>Pause</span>';pause.disabled=state==='idle';pause.classList.toggle('is-paused',state==='paused');});
 }
-Object.assign(window, { openMissionModal, openTopMissionModal, openExplorerMissionSimulator, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openLearningHub, openLearningTopic, backToLearningQuestions, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, toggleExplorerPlanets, toggleExplorerCraft, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, toggleBlackHoleSidebar, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration });  
+
+function speakLearningTopic(){
+ if(!('speechSynthesis' in window)){alert('Text-to-speech is not supported by this browser.');return;}
+ const synth=window.speechSynthesis;
+ if(explorerVoiceState==='paused'){
+   synth.resume();
+   explorerVoiceState='playing';
+   updateExplorerVoiceButtons('playing');
+   return;
+ }
+ if(explorerVoiceState==='playing')return;
+ const listenBtn=document.getElementById('cl-topic-listen');
+ const narration=(listenBtn?.dataset.narration||'').replace(/\s+/g,' ').trim();
+ if(!narration)return;
+ synth.cancel();
+ const session=++explorerSpeechSession;
+ explorerSpeechChunks=narration.match(/[^.!?]+[.!?]*/g)?.map(part=>part.trim()).filter(Boolean)||[narration];
+ explorerSpeechIndex=0;
+ explorerVoiceState='playing';
+ updateExplorerVoiceButtons('playing');
+ speakNextExplorerChunk(session);
+}
+
+Object.assign(window, { openMissionModal, openTopMissionModal, openExplorerMissionSimulator, closeMissionModal, calculateMissionData, start3DMissionSimulation, openExplorer, closeExplorer, openExplorerDashboard, openExplorerObject, openLearningHub, openLearningTopic, backToLearningQuestions, speakLearningTopic, openLearningQuiz, openLearningQuizFromNav, toggleExplorerLearning, startQuizRound, answerQuizOption, nextQuizQuestion, openMilkyWayGalaxy, openCreatorPortfolio, scrollCreatorTo, toggleExplorerNav, toggleExplorerPlanets, toggleExplorerCraft, speakExplorerInfo, toggleExplorerVoicePause, stopExplorerVoice, openBlackHoleExplorer, toggleBlackHoleSidebar, selectBlackHoleObject, runBlackHoleSimulation, resetBlackHoleSimulation, narrateBlackHole, stopBlackHoleNarration, openISSExplorer, startISSTracker, stopISSTracker });  
